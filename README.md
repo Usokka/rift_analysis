@@ -2,7 +2,7 @@
 
 Plateforme d’analyse de performances esport League of Legends, pensée pour démontrer **Data Engineering + Data Analysis + Fullstack**.
 
-> État : ticket 001 — fondations. Aucune donnée de match ni métrique fictive n’est affichée.
+> État : tickets 001–002 — fondations et migrations PostgreSQL. Aucune donnée de match ni métrique fictive n’est affichée.
 
 ## Démarrage local
 
@@ -20,7 +20,7 @@ docker compose up --build -d --wait
 - Liveness : http://localhost:8000/api/v1/health
 - Readiness PostgreSQL : http://localhost:8000/api/v1/ready
 
-Les trois services sont vérifiés au démarrage. PostgreSQL reste privé au réseau Compose. Les ports web/API sont liés à localhost. Les identifiants de `.env.example` servent uniquement au développement local ; utiliser un mot de passe compatible URL ou encoder ses caractères réservés dans `DATABASE_URL`.
+Les migrations sont appliquées avant le démarrage de l’API ; les trois services permanents sont vérifiés au démarrage. PostgreSQL reste privé au réseau Compose. Les ports web/API sont liés à localhost. Les identifiants de `.env.example` servent uniquement au développement local ; utiliser un mot de passe compatible URL ou encoder ses caractères réservés dans `DATABASE_URL`.
 
 ```bash
 docker compose logs -f
@@ -37,6 +37,7 @@ Prérequis supplémentaires : Python 3.12+, uv et Node.js 22.12+ / npm.
 cp .env.example .env
 docker compose -f docker-compose.yml -f compose.dev.yml up -d postgres
 make install
+make migrate
 make api
 # Dans un autre terminal :
 make web
@@ -56,15 +57,17 @@ Cette commande lance Ruff, les tests API, ESLint, TypeScript et le build fronten
 - React / TypeScript / Vite, identité bleu nuit / or / parchemin.
 - État vide, disponibilité du service et bouton de nouvelle vérification.
 - PostgreSQL, volume persistant, images applicatives sans utilisateur root.
+- Alembic, schémas raw/staging/analytics, migrations automatiques avec Compose.
 - Docker Compose, Makefile, dépendances verrouillées et GitHub Actions.
 
 ## Suite
 
-1. SQLAlchemy + Alembic : migrations et schémas.
-2. Inspection Oracle’s Elixir, stockage raw et ingestion idempotente.
-3. Modèle métier, contrôles qualité et KPIs documentés.
-4. API analytique et Overview connectée aux données réelles.
+1. Inspection Oracle’s Elixir, stockage raw et ingestion idempotente.
+2. Modèle métier, contrôles qualité et KPIs documentés.
+3. API analytique et Overview connectée aux données réelles.
 
 Le [plan complet](docs/RIFT_ANALYST_PLAN.md) décrit la cible V1. Les [décisions d’architecture](docs/architecture.md) distinguent la cible des fonctionnalités déjà livrées.
 
 La démo publique, les données réelles et les pages analytiques ne sont pas encore livrées.
+
+La [documentation des migrations](docs/migrations.md) détaille les commandes, le rollback et les tests PostgreSQL.

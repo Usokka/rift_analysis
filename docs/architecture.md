@@ -1,6 +1,6 @@
 # Architecture — état initial
 
-Le ticket 001 fournit le monorepo, les services locaux et la CI. Le stockage des matchs, les migrations et les calculs métier ne sont pas encore implémentés.
+Les tickets 001–002 fournissent le monorepo, les services locaux, la CI et les migrations Alembic. Le stockage des matchs et les calculs métier ne sont pas encore implémentés.
 
 - `apps/api/app/api` : routes HTTP et contrats de réponse.
 - `apps/api/app/core` : configuration et connexion PostgreSQL paresseuse.
@@ -10,7 +10,7 @@ Le ticket 001 fournit le monorepo, les services locaux et la CI. Le stockage des
 
 `/api/v1/health` vérifie le processus ; `/api/v1/ready` exécute `SELECT 1` et renvoie 503 si PostgreSQL est indisponible. Aucun secret ni détail de connexion n'est renvoyé en cas d'échec.
 
-Les schémas seront gérés avec Alembic au ticket 002, et non par `create_all` au démarrage. Les dossiers métier seront ajoutés avec leur implémentation, sans arborescence vide.
+Les schémas raw/staging/analytics sont créés par la révision Alembic 0001. Le service ponctuel `migrate` doit réussir avant le démarrage de l’API ; aucun `create_all` n’est exécuté. Les dossiers métier seront ajoutés avec leur implémentation, sans arborescence vide.
 
 ## Décisions à préciser avant les métriques
 

@@ -1,4 +1,4 @@
-.PHONY: up down logs install api web lint test build check
+.PHONY: up down logs install api web lint test build check migrate migration-status migration-check
 up:
 	docker compose up --build -d --wait
 
@@ -30,3 +30,12 @@ build:
 	npm --prefix apps/web run build
 
 check: lint test build
+
+migrate:
+	uv run alembic upgrade head
+
+migration-status:
+	uv run alembic current
+
+migration-check:
+	uv run alembic check

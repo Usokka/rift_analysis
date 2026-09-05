@@ -41,6 +41,11 @@ jobs:
       - run: cp .env.example .env
       - run: docker compose config --quiet
       - run: docker compose up --build -d --wait --wait-timeout 180
+      - name: Verify migrations and repeated upgrade
+        run: |
+          docker compose run --rm migrate
+          docker compose run --rm migrate .venv/bin/alembic check
+          docker compose exec -T postgres psql -U rift -d rift_analyst -tAc "SELECT version_num FROM public.alembic_version" | grep -qx 0001
       - name: Smoke test API and web proxy
         run: |
           curl --fail --retry 3 http://localhost:8000/api/v1/ready
