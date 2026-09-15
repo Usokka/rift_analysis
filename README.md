@@ -4,6 +4,18 @@ Plateforme d’analyse de performances esport League of Legends construite avec 
 
 **[Ouvrir la démo publique](https://usokka.github.io/rift_analysis/)** · instantané T1 / LCK 2025 calculé sur le corpus vérifié. La [courte étude d’équipe](docs/case-study-t1-2025.md) documente les observations, les échantillons et les limites.
 
+## Aperçu du dashboard
+
+[![Vue d’ensemble du dashboard Rift Analyst](docs/screenshots/overview.jpg)](https://usokka.github.io/rift_analysis/)
+
+| Équipe | Joueurs |
+| --- | --- |
+| ![KPIs de performance d’équipe](docs/screenshots/team.jpg) | ![KPIs de performance individuelle](docs/screenshots/players.jpg) |
+
+| Draft | Tendances |
+| --- | --- |
+| ![Analyse de la draft par champion](docs/screenshots/draft.jpg) | ![Évolution hebdomadaire de la différence d’or à 15 minutes](docs/screenshots/trends.jpg) |
+
 ## Résultats vérifiés
 
 Le rapport reproductible [`docs/data-report.json`](docs/data-report.json) mesure les exports 2023 et 2025 épinglés par checksum :
