@@ -338,7 +338,7 @@ function exportReport(primary: Overview, comparison: Overview | null) {
   document.body.append(link);
   link.click();
   link.remove();
-  URL.revokeObjectURL(url);
+  window.setTimeout(() => URL.revokeObjectURL(url), 1_000);
 }
 
 export function App() {

@@ -6,7 +6,9 @@ Plateforme d’analyse de performances esport League of Legends construite avec 
 
 ## Aperçu du dashboard
 
-[![Vue d’ensemble du dashboard Rift Analyst](docs/screenshots/overview.jpg)](https://usokka.github.io/rift_analysis/)
+[![Comparaison T1 face à Gen.G dans Rift Analyst](docs/screenshots/comparator.jpg)](https://usokka.github.io/rift_analysis/)
+
+[Voir également la vue d’ensemble](docs/screenshots/overview.jpg).
 
 | Équipe | Joueurs |
 | --- | --- |
