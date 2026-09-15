@@ -1,26 +1,38 @@
-# Architecture — état initial
+# Architecture V1
 
-Les tickets 001–002 fournissent le monorepo, les services locaux, la CI et les migrations Alembic. Le stockage des matchs et les calculs métier ne sont pas encore implémentés.
+Rift Analyst reste un monorepo simple : un pipeline Python charge PostgreSQL, FastAPI expose les agrégats SQL et React les présente. Le navigateur ne calcule aucune statistique métier.
 
-- `apps/api/app/api` : routes HTTP et contrats de réponse.
-- `apps/api/app/core` : configuration et connexion PostgreSQL paresseuse.
-- `apps/web/src/app` : coque React et état vide explicite.
-- PostgreSQL : source de vérité prévue pour raw → staging → analytics.
-- Nginx relaie `/api/` vers FastAPI : le navigateur utilise une origine unique.
+```text
+Export Oracle’s Elixir
+        ↓ vérification SHA-256, CSV lu par groupes de matchs
+raw.source_files ─ raw.oracle_elixir_rows ─ raw.pipeline_runs
+        ↓ validation structurelle et projection transactionnelle
+analytics.matches
+   ├── analytics.team_match_stats
+   ├── analytics.player_match_stats
+   └── analytics.draft_actions
+        ↓ AnalyticsRepository → AnalyticsService → FastAPI
+React : Overview / Team / Players / Draft / Trends
+```
 
-`/api/v1/health` vérifie le processus ; `/api/v1/ready` vérifie les trois schémas et la révision Alembic attendue ; une base vide ou obsolète renvoie 503. Les attentes de connexion, de pool et les requêtes SQL ont chacune un délai maximal configuré de 3 secondes (ce ne sont pas une deadline globale). Aucun secret ni détail de connexion n'est renvoyé en cas d'échec.
+## Ingestion et idempotence
 
-Les schémas raw/staging/analytics sont créés par la révision Alembic 0001. Le service ponctuel `migrate` doit réussir avant le démarrage de l’API ; aucun `create_all` n’est exécuté. Les dossiers métier seront ajoutés avec leur implémentation, sans arborescence vide.
+Chaque fichier est identifié par son SHA-256. Le raw conserve le payload JSONB et son numéro de ligne. Une relance avec le même checksum crée un run `SKIPPED` sans dupliquer les données. Un fichier corrigé obtient une nouvelle entrée raw ; ses matchs remplacent transactionnellement les projections analytiques portant le même `gameid`.
 
-## Décisions à préciser avant les métriques
+Le lecteur garde un seul groupe de match à la fois et écrit par lots. Le jeu d’identifiants déjà rencontré tient en mémoire pour détecter un `gameid` non contigu. Cette organisation évite de charger un CSV complet dans les 4 Go de RAM de la machine cible.
 
-1. Inspecter le schéma réel d'Oracle's Elixir avant de définir les tables métier.
-2. Conserver équipe et rôle au niveau joueur-match pour préserver les changements de roster.
-3. Définir précisément les dénominateurs, les valeurs manquantes et la taille des échantillons.
-4. Ne pas assimiler le « draft win rate » à un effet causal de la draft.
-5. Ne pas afficher de score d'objectifs ou d'early game avant une formule documentée et testée.
-6. L'image fournie est une référence artistique ; ses chiffres et son roster ne constituent pas des données.
+Un match est projeté s’il contient exactement deux lignes équipe, les côtés BLUE/RED, un seul vainqueur et cinq rôles distincts par côté. Les lignes rejetées restent dans le raw. Les valeurs statistiques absentes restent nulles et sont reflétées dans la couverture de chaque KPI.
 
-Le prochain incrément est l’inspection du dataset puis l’ingestion raw idempotente (tickets 003–005). Voir [la roadmap](ROADMAP.md).
+Les actions PICK viennent des dix lignes joueurs ; leur `action_slot` représente le rôle normalisé et pas l’ordre réel de sélection. Les BAN viennent une seule fois de chaque ligne équipe. Les taux de draft utilisent les parties marquées complètes.
 
-Nginx utilise le DNS Docker pour réévaluer l’adresse de l’API après recréation du conteneur. Alembic ne gère que raw/staging/analytics ; les tables applicatives externes de public sont exclues de l’autogénération.
+## API analytique
+
+`GET /api/v1/analytics/metadata` fournit le corpus, les ligues, saisons, splits et équipes. `GET /api/v1/analytics/overview` applique les filtres, agrège 15 KPIs équipe, 9 KPIs par joueur/rôle, 4 KPIs draft par champion et des tendances hebdomadaires.
+
+Les benchmarks équipe conservent ligue, saison, split et période, puis retirent seulement le filtre équipe. Les pourcentages renvoient des points de pourcentage comme delta. Chaque métrique expose valeur, unité, effectif valide et effectif éligible.
+
+## Exécution
+
+Alembic applique les migrations avant FastAPI. La readiness vérifie les schémas et la révision attendue. PostgreSQL reste privé dans Compose ; Nginx relaie `/api/` sous l’origine du frontend et réévalue l’adresse Docker de l’API après une recréation.
+
+La CI possède trois niveaux : tests et build, démarrage Compose avec migrations et proxy, puis contrôle ponctuel du corpus complet lorsque le titre de PR contient `[full-data]`.

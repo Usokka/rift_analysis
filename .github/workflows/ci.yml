@@ -45,11 +45,12 @@ jobs:
         run: |
           docker compose run --rm migrate
           docker compose run --rm migrate .venv/bin/alembic check
-          docker compose exec -T postgres psql -U rift -d rift_analyst -tAc "SELECT version_num FROM public.alembic_version" | grep -qx 0001
+          docker compose exec -T postgres psql -U rift -d rift_analyst -tAc "SELECT version_num FROM public.alembic_version" | grep -qx 0002
       - name: Smoke test API and web proxy
         run: |
           curl --fail --retry 3 http://localhost:8000/api/v1/ready
           curl --fail --retry 3 http://localhost:3000/api/v1/ready
+          curl --fail --retry 3 http://localhost:3000/api/v1/analytics/metadata
           curl --fail http://localhost:3000/ | grep -q 'Rift Analyst'
       - name: Verify proxy recovery after API recreation
         run: |
@@ -59,3 +60,48 @@ jobs:
         run: docker compose logs
       - if: always()
         run: docker compose down -v
+
+  full-data:
+    if: github.event_name == 'pull_request' && contains(github.event.pull_request.title, '[full-data]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: rift_full
+          POSTGRES_USER: rift
+          POSTGRES_PASSWORD: full_data_only
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U rift -d rift_full"
+          --health-interval 5s --health-timeout 3s --health-retries 10
+    env:
+      DATABASE_URL: postgresql+psycopg://rift:full_data_only@localhost:5432/rift_full
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.11.33"
+          python-version: "3.12"
+      - run: uv sync --frozen
+      - run: uv run alembic upgrade head
+      - name: Download pinned corpus
+        run: uv run python scripts/download_data.py --years 2023 2025 --output-dir data/raw
+      - name: Ingest 18,000+ matches
+        run: >-
+          uv run python -m app.ingestion.cli
+          data/raw/2023_LoL_esports_match_data_from_OraclesElixir.csv
+          data/raw/2025_LoL_esports_match_data_from_OraclesElixir.csv
+          --source-uri https://oracleselixir.com/gamedata/downloads
+      - name: Verify corpus and analytics
+        run: >-
+          uv run python scripts/verify_database.py
+          --minimum-matches 18000 --minimum-kpis 25
+          --output full-data-proof.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rift-analyst-full-data-proof
+          path: full-data-proof.json
+          retention-days: 30

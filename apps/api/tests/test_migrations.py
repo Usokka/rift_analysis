@@ -55,7 +55,7 @@ def test_migration_lifecycle_on_postgres():
                     connection.execute(
                         text("SELECT version_num FROM public.alembic_version")
                     ).scalar_one()
-                    == "0001"
+                    == "0002"
                 )
                 # Unrelated public tables must never become DROP TABLE candidates.
                 connection.execute(text("CREATE TABLE public.external_tool (id integer)"))
