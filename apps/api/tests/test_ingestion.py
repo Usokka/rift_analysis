@@ -112,5 +112,10 @@ def test_idempotent_ingestion_and_analytics():
                 len(champion.metrics) == len(DRAFT_METRICS) == 4 for champion in overview.draft
             )
             assert len(TEAM_METRICS) + len(PLAYER_METRICS) + len(DRAFT_METRICS) == 28
+
+            # This integration test shares its CI database with the migration lifecycle
+            # test. Restore the genuinely empty state expected by that destructive test.
+            command.downgrade(config, "base")
+            connection.exec_driver_sql("DROP TABLE IF EXISTS public.alembic_version")
     finally:
         engine.dispose()

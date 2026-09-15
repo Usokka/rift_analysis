@@ -164,6 +164,12 @@ def upgrade() -> None:
         op.f("ix_team_match_stats_team_id"), "team_match_stats", ["team_id"], schema="analytics"
     )
     op.create_index(
+        op.f("ix_team_match_stats_team_name"),
+        "team_match_stats",
+        ["team_name"],
+        schema="analytics",
+    )
+    op.create_index(
         "ix_team_match_stats_team_game",
         "team_match_stats",
         ["team_id", "game_id"],
