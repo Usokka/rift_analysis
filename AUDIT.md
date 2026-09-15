@@ -34,3 +34,8 @@ Pas d’ingestion, pas de tables de matchs, pas de calculs, pas de filtre ligue,
 Voir [ROADMAP](docs/ROADMAP.md) pour les critères de sortie et [metrics](docs/metrics.md) pour les contrats analytiques cibles.
 
 Références techniques consultées : [résolution dynamique Nginx](https://nginx.org/en/docs/http/ngx_http_upstream_module.html#server), [timeouts PostgreSQL](https://www.postgresql.org/docs/17/runtime-config-client.html#RUNTIME-CONFIG-CLIENT-STATEMENT).
+
+
+## Mise à jour V1
+
+L’audit ci-dessus décrit l’état initial du 15 septembre 2026. La branche V1 ajoute ensuite l’ingestion Oracle’s Elixir, quatre tables analytiques, 28 KPIs, deux endpoints et les cinq vues du dashboard. Le rapport `docs/data-report.json` mesure 20 871 matchs acceptés sur deux fichiers épinglés par checksum.

@@ -1,0 +1,52 @@
+{
+  "generated_at": "2026-09-15T13:11:22.396193+00:00",
+  "source": "Oracle's Elixir match data exports",
+  "source_page": "https://oracleselixir.com/gamedata/downloads",
+  "files": [
+    {
+      "filename": "2023_LoL_esports_match_data_from_OraclesElixir.csv",
+      "sha256": "14b832026c559a8d4a72b1f7a98d64ee46fe9b50b7d1aa834af098c8d3fe7831",
+      "size_bytes": 68833445,
+      "rows": 130176,
+      "distinct_games": 10848,
+      "accepted_games": 10818,
+      "rejected_games": 30,
+      "years": [
+        2023,
+        2024
+      ],
+      "league_count": 48,
+      "completeness_rows": {
+        "complete": 110688,
+        "partial": 19488
+      }
+    },
+    {
+      "filename": "2025_LoL_esports_match_data_from_OraclesElixir.csv",
+      "sha256": "1adfa81d8ea54cd62b332d18f8a4089cb64331da448b11f0ff7084fac55ed406",
+      "size_bytes": 79130187,
+      "rows": 120636,
+      "distinct_games": 10053,
+      "accepted_games": 10053,
+      "rejected_games": 0,
+      "years": [
+        2025,
+        2026
+      ],
+      "league_count": 45,
+      "completeness_rows": {
+        "complete": 110832,
+        "partial": 9804
+      }
+    }
+  ],
+  "totals": {
+    "rows": 250812,
+    "distinct_games": 20901,
+    "accepted_games": 20871,
+    "rejected_games": 30,
+    "duplicates_between_files": 0,
+    "implemented_kpi_contracts": 28
+  },
+  "counting_rule": "Distinct non-empty gameid after structural validation; player/team rows are not games."
+}

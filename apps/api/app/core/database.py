@@ -4,7 +4,7 @@ from sqlalchemy import Engine, create_engine, text
 
 from app.core.config import get_settings
 
-REQUIRED_REVISION = "0001"
+REQUIRED_REVISION = "0002"
 REQUIRED_SCHEMAS = {"raw", "staging", "analytics"}
 
 

@@ -1,6 +1,6 @@
-# Contrats des KPIs cibles — non implémentés
+# Contrats des KPIs V1
 
-Ce catalogue prépare 28 indicateurs ; il ne prouve pas que le projet les calcule. Les sources ci-dessous sont des **concepts métier**, pas des noms de colonnes Oracle’s Elixir vérifiés. La version 0.2 doit fournir leur mapping réel. Un indicateur sans source vérifiée ne peut pas être déclaré livré.
+Ce catalogue définit les 28 indicateurs calculés par l’API. Le mapping Oracle’s Elixir est implémenté dans `app.ingestion.oracle_elixir`; les unités, effectifs et couvertures sont exposés avec chaque valeur.
 
 ## Règles communes
 
@@ -42,13 +42,13 @@ Les pourcentages sont sur 0–100. Un dénominateur nul ou un échantillon vide 
 | P08 | Taille du pool | nombre de champions distincts joués | champion joueur-match | champions |
 | P09 | Taux de victoire joueur | 100 × victoires / participations valides | joueur-match et résultat | % |
 
-## Draft — par champion, à l’échelle du périmètre de ligue
+## Draft — par champion pour l’équipe sélectionnée
 
 | ID | Indicateur | Définition / formule | Source métier requise | Unité |
 |---|---|---|---|---|
-| D01 | Pick rate | 100 × matchs distincts où le champion est choisi / matchs à picks complets | picks et complétude | % |
-| D02 | Ban rate | 100 × matchs distincts où le champion est banni / matchs à bans complets | bans et complétude | % |
-| D03 | Présence pick/ban | 100 × matchs distincts où le champion est choisi OU banni / matchs à drafts complets | union picks/bans dédupliquée par match/champion | % |
+| D01 | Pick rate | 100 × matchs distincts où le champion est choisi / matchs complets | picks et complétude | % |
+| D02 | Ban rate | 100 × matchs distincts où le champion est banni / matchs complets | bans et complétude | % |
+| D03 | Présence pick/ban | 100 × matchs distincts où le champion est choisi OU banni / matchs complets | union picks/bans dédupliquée par match/champion | % |
 | D04 | Victoire avec le champion | 100 × matchs gagnés avec ce champion / matchs où il est joué, résultat valide | champion, équipe qui le joue, résultat | % |
 
 Un export peut répéter les bans sur plusieurs lignes joueurs : normaliser à un événement match/équipe/slot avant agrégation. Ne pas déduire l’ordre de pick depuis l’ordre des rôles. Une absence de ban peut être une action valide ou une donnée manquante : vérifier le contrat fournisseur avant de décider la complétude. Restreindre ces formules aux formats compétitifs standard sans choix miroir, ou définir un contrat distinct.
@@ -58,10 +58,10 @@ Les vues top picks/top bans sont des classements de D01/D02, pas de nouveaux KPI
 ## Benchmarks et tests d’acceptation
 
 - Benchmark équipe : même ligue/saison/période et filtres compatibles, calcul sur l’ensemble des observations équipe-match (équipe sélectionnée incluse en V1). Éviter la moyenne non pondérée des moyennes d’équipes.
-- Benchmark joueur : même rôle dans la ligue, avec observations historiques ; ne pas agréger un joueur tous rôles confondus pour une comparaison de lane.
+- Les joueurs sont agrégés par identité et rôle historique. Le benchmark joueur par rôle est prévu en V1.1 ; la V1 affiche leurs valeurs et couvertures.
 - Delta de pourcentages : points de pourcentage. Delta d’un débit/différence : même unité que la valeur.
 - Exemples minimaux calculés à la main : deux matchs de durées différentes, zéro death, zéro kill équipe, champ nul, changement d’équipe/rôle, ban dupliqué, période vide, filtre side, division par zéro.
 - GD@15 : sur un match complet, somme des deux différences équipe = 0. Un match terminé avant 15 minutes sans mesure ne reçoit pas artificiellement GD@15 = 0.
 - La comparaison de périodes doit afficher leurs effectifs. Pour un échantillon < 5 observations, montrer « échantillon faible » ; ce seuil de présentation ne représente pas une significativité statistique.
 
-Les scores composites Objective Control / Early Game du blueprint restent différés tant que couverture, pondérations et interprétation ne sont pas validées. Si certains des 28 contrats sont impossibles avec la source réelle, ne pas annoncer « 25+ » tant que 25 indicateurs justifiables ne sont pas disponibles.
+Les scores composites Objective Control / Early Game restent différés : les métriques atomiques sont plus faciles à auditer. Le rapport `data-report.json` et la commande `verify-data` contrôlent séparément le volume du corpus et le nombre de contrats implémentés.

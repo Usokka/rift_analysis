@@ -11,3 +11,7 @@ dist/
 *.tsbuildinfo
 coverage/
 .DS_Store
+
+# Downloaded datasets are reproducible and too large for Git.
+data/raw/*
+!data/raw/.gitkeep
