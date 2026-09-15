@@ -1,4 +1,4 @@
-.PHONY: up down logs install api web lint test build check migrate migration-status migration-check download-data ingest ingest-local data-report verify-data verify-data-local
+.PHONY: up down logs install api web lint test build check migrate migration-status migration-check download-data ingest ingest-local data-report verify-data verify-data-local portfolio-demo
 up:
 	docker compose up --build -d --wait
 
@@ -61,3 +61,8 @@ verify-data:
 
 verify-data-local:
 	uv run python scripts/verify_database.py --minimum-matches 18000 --minimum-kpis 25
+
+portfolio-demo:
+	uv run python scripts/build_portfolio_demo.py \
+		data/raw/2023_LoL_esports_match_data_from_OraclesElixir.csv \
+		data/raw/2025_LoL_esports_match_data_from_OraclesElixir.csv

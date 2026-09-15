@@ -2,6 +2,8 @@
 
 Plateforme d’analyse de performances esport League of Legends construite avec un pipeline reproductible, PostgreSQL, FastAPI et React. Elle transforme les exports Oracle’s Elixir en 28 KPIs équipe, joueur et draft, puis compare une équipe à sa ligue sur la même période.
 
+**[Ouvrir la démo publique](https://usokka.github.io/rift_analysis/)** · instantané T1 / LCK 2025 calculé sur le corpus vérifié. La [courte étude d’équipe](docs/case-study-t1-2025.md) documente les observations, les échantillons et les limites.
+
 ## Résultats vérifiés
 
 Le rapport reproductible [`docs/data-report.json`](docs/data-report.json) mesure les exports 2023 et 2025 épinglés par checksum :
@@ -102,7 +104,10 @@ make check
 
 Cette commande exécute Ruff, pytest, ESLint, TypeScript et le build frontend. La CI ajoute PostgreSQL réel, le cycle Alembic, l’ingestion idempotente, Docker Compose et le test de reprise du proxy après recréation de l’API. La PR de livraison exécute aussi un contrôle complet sur les deux exports et publie la preuve comme artefact.
 
+`make portfolio-demo` régénère l’instantané public et l’étude T1 à partir des deux exports épinglés. La CI full-data refuse toute divergence entre les fichiers publiés et ce calcul reproductible.
+
 - [Contrats des métriques](docs/metrics.md)
 - [Architecture](docs/architecture.md)
+- [Étude T1 / LCK 2025](docs/case-study-t1-2025.md)
 - [Roadmap](docs/ROADMAP.md)
 - [Migrations](docs/migrations.md)
