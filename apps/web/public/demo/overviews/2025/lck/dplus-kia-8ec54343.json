@@ -1,0 +1,1497 @@
+{
+  "filters": {
+    "league": "LCK",
+    "year": 2025,
+    "team_id": "oe:team:ef69efa6acebe94107f0cf1ba716806",
+    "team_name": "Dplus Kia",
+    "split": null,
+    "start_date": null,
+    "end_date": null
+  },
+  "team_metrics": [
+    {
+      "id": "T01",
+      "label": "Taux de victoire",
+      "value": 55.72519083969466,
+      "unit": "%",
+      "sample_size": 131,
+      "eligible_sample_size": 131,
+      "benchmark": 50.0,
+      "delta": 5.725190839694662
+    },
+    {
+      "id": "T02",
+      "label": "Durée moyenne",
+      "value": 32.738804071246825,
+      "unit": "min",
+      "sample_size": 131,
+      "eligible_sample_size": 131,
+      "benchmark": 32.26237237237237,
+      "delta": 0.4764316988744568
+    },
+    {
+      "id": "T03",
+      "label": "Kills par match",
+      "value": 14.687022900763358,
+      "unit": "kills/match",
+      "sample_size": 131,
+      "eligible_sample_size": 131,
+      "benchmark": 14.404504504504505,
+      "delta": 0.2825183962588529
+    },
+    {
+      "id": "T04",
+      "label": "Deaths par match",
+      "value": 13.404580152671755,
+      "unit": "deaths/match",
+      "sample_size": 131,
+      "eligible_sample_size": 131,
+      "benchmark": 14.431531531531531,
+      "delta": -1.026951378859776
+    },
+    {
+      "id": "T05",
+      "label": "Différence d’or à 15 min",
+      "value": 192.80152671755727,
+      "unit": "or",
+      "sample_size": 131,
+      "eligible_sample_size": 131,
+      "benchmark": 0.0,
+      "delta": 192.80152671755727
+    },
+    {
+      "id": "T06",
+      "label": "Premier sang",
+      "value": 45.038167938931295,
+      "unit": "%",
+      "sample_size": 131,
+      "eligible_sample_size": 131,
+      "benchmark": 50.0,
+      "delta": -4.961832061068705
+    },
+    {
+      "id": "T07",
+      "label": "Première tour",
+      "value": 42.74809160305343,
+      "unit": "%",
+      "sample_size": 131,
+      "eligible_sample_size": 131,
+      "benchmark": 50.0,
+      "delta": -7.251908396946568
+    },
+    {
+      "id": "T08",
+      "label": "Premier dragon",
+      "value": 54.19847328244275,
+      "unit": "%",
+      "sample_size": 131,
+      "eligible_sample_size": 131,
+      "benchmark": 50.0,
+      "delta": 4.198473282442748
+    },
+    {
+      "id": "T09",
+      "label": "Premier héraut",
+      "value": 52.67175572519084,
+      "unit": "%",
+      "sample_size": 131,
+      "eligible_sample_size": 131,
+      "benchmark": 50.0,
+      "delta": 2.6717557251908417
+    },
+    {
+      "id": "T10",
+      "label": "Premier Baron",
+      "value": 41.98473282442748,
+      "unit": "%",
+      "sample_size": 131,
+      "eligible_sample_size": 131,
+      "benchmark": 42.792792792792795,
+      "delta": -0.8080599683653134
+    },
+    {
+      "id": "T11",
+      "label": "Dragons par match",
+      "value": 2.381679389312977,
+      "unit": "dragons/match",
+      "sample_size": 131,
+      "eligible_sample_size": 131,
+      "benchmark": 2.2036036036036037,
+      "delta": 0.17807578570937332
+    },
+    {
+      "id": "T12",
+      "label": "Barons par match",
+      "value": 0.5038167938931297,
+      "unit": "barons/match",
+      "sample_size": 131,
+      "eligible_sample_size": 131,
+      "benchmark": 0.5243243243243243,
+      "delta": -0.020507530431194576
+    },
+    {
+      "id": "T13",
+      "label": "Tours par match",
+      "value": 6.0,
+      "unit": "tours/match",
+      "sample_size": 131,
+      "eligible_sample_size": 131,
+      "benchmark": 5.716216216216216,
+      "delta": 0.2837837837837842
+    },
+    {
+      "id": "T14",
+      "label": "Victoire côté bleu",
+      "value": 61.016949152542374,
+      "unit": "%",
+      "sample_size": 59,
+      "eligible_sample_size": 131,
+      "benchmark": 50.990990990990994,
+      "delta": 10.02595816155138
+    },
+    {
+      "id": "T15",
+      "label": "Victoire côté rouge",
+      "value": 51.388888888888886,
+      "unit": "%",
+      "sample_size": 72,
+      "eligible_sample_size": 131,
+      "benchmark": 49.009009009009006,
+      "delta": 2.37987987987988
+    }
+  ],
+  "players": [
+    {
+      "player_id": "oe:player:85104684d1eb7f4c0ce393441a0b669",
+      "player_name": "Aiming",
+      "role": "ADC",
+      "metrics": [
+        {
+          "id": "P01",
+          "label": "KDA",
+          "value": 6.051282051282051,
+          "unit": "ratio",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "P02",
+          "label": "Participation aux kills",
+          "value": 73.5966735966736,
+          "unit": "%",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "P03",
+          "label": "CS par minute",
+          "value": 9.80184745479487,
+          "unit": "CS/min",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "P04",
+          "label": "Or par minute",
+          "value": 452.4942971394373,
+          "unit": "or/min",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "P05",
+          "label": "Dégâts par minute",
+          "value": 751.6791475437866,
+          "unit": "dégâts/min",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "P06",
+          "label": "Vision par minute",
+          "value": 1.2360148760137877,
+          "unit": "points/min",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "P07",
+          "label": "Différence d’or à 15 min",
+          "value": 124.37404580152672,
+          "unit": "or",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "P08",
+          "label": "Taille du pool",
+          "value": 19,
+          "unit": "champions",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "P09",
+          "label": "Taux de victoire",
+          "value": 55.72519083969466,
+          "unit": "%",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        }
+      ]
+    },
+    {
+      "player_id": "oe:player:10b86429ce8048aba673d802632e358",
+      "player_name": "Lucid",
+      "role": "JUNGLE",
+      "metrics": [
+        {
+          "id": "P01",
+          "label": "KDA",
+          "value": 3.908108108108108,
+          "unit": "ratio",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "P02",
+          "label": "Participation aux kills",
+          "value": 75.15592515592516,
+          "unit": "%",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "P03",
+          "label": "CS par minute",
+          "value": 6.341192335044514,
+          "unit": "CS/min",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "P04",
+          "label": "Or par minute",
+          "value": 358.9817625045176,
+          "unit": "or/min",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "P05",
+          "label": "Dégâts par minute",
+          "value": 421.2999024587392,
+          "unit": "dégâts/min",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "P06",
+          "label": "Vision par minute",
+          "value": 1.6969847703505654,
+          "unit": "points/min",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "P07",
+          "label": "Différence d’or à 15 min",
+          "value": 97.7557251908397,
+          "unit": "or",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "P08",
+          "label": "Taille du pool",
+          "value": 20,
+          "unit": "champions",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "P09",
+          "label": "Taux de victoire",
+          "value": 55.72519083969466,
+          "unit": "%",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        }
+      ]
+    },
+    {
+      "player_id": "oe:player:5f8ff49cd56eae61d635966b183a451",
+      "player_name": "ShowMaker",
+      "role": "MID",
+      "metrics": [
+        {
+          "id": "P01",
+          "label": "KDA",
+          "value": 4.662020905923345,
+          "unit": "ratio",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "P02",
+          "label": "Participation aux kills",
+          "value": 69.54261954261955,
+          "unit": "%",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "P03",
+          "label": "CS par minute",
+          "value": 8.474431365538788,
+          "unit": "CS/min",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "P04",
+          "label": "Or par minute",
+          "value": 408.1863931884333,
+          "unit": "or/min",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "P05",
+          "label": "Dégâts par minute",
+          "value": 638.6587493733654,
+          "unit": "dégâts/min",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "P06",
+          "label": "Vision par minute",
+          "value": 1.1716609605676822,
+          "unit": "points/min",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "P07",
+          "label": "Différence d’or à 15 min",
+          "value": 7.282442748091603,
+          "unit": "or",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "P08",
+          "label": "Taille du pool",
+          "value": 32,
+          "unit": "champions",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "P09",
+          "label": "Taux de victoire",
+          "value": 55.72519083969466,
+          "unit": "%",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        }
+      ]
+    },
+    {
+      "player_id": "oe:player:dee54127bb56d2e2540ba71cc416f1c",
+      "player_name": "BeryL",
+      "role": "SUPPORT",
+      "metrics": [
+        {
+          "id": "P01",
+          "label": "KDA",
+          "value": 2.8065173116089612,
+          "unit": "ratio",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "P02",
+          "label": "Participation aux kills",
+          "value": 71.62162162162163,
+          "unit": "%",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "P03",
+          "label": "CS par minute",
+          "value": 1.1686297978836266,
+          "unit": "CS/min",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "P04",
+          "label": "Or par minute",
+          "value": 248.14333513389576,
+          "unit": "or/min",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "P05",
+          "label": "Dégâts par minute",
+          "value": 229.36225114348667,
+          "unit": "dégâts/min",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "P06",
+          "label": "Vision par minute",
+          "value": 3.452027964418813,
+          "unit": "points/min",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "P07",
+          "label": "Différence d’or à 15 min",
+          "value": 50.42748091603053,
+          "unit": "or",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "P08",
+          "label": "Taille du pool",
+          "value": 25,
+          "unit": "champions",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "P09",
+          "label": "Taux de victoire",
+          "value": 55.72519083969466,
+          "unit": "%",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        }
+      ]
+    },
+    {
+      "player_id": "oe:player:da9f969a7ab3819b9e528072aa4d5e6",
+      "player_name": "Siwoo",
+      "role": "TOP",
+      "metrics": [
+        {
+          "id": "P01",
+          "label": "KDA",
+          "value": 2.7941176470588234,
+          "unit": "ratio",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "P02",
+          "label": "Participation aux kills",
+          "value": 54.313929313929314,
+          "unit": "%",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "P03",
+          "label": "CS par minute",
+          "value": 7.914365768069421,
+          "unit": "CS/min",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "P04",
+          "label": "Or par minute",
+          "value": 382.0647658426826,
+          "unit": "or/min",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "P05",
+          "label": "Dégâts par minute",
+          "value": 601.0357249725057,
+          "unit": "dégâts/min",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "P06",
+          "label": "Vision par minute",
+          "value": 1.0658034329860449,
+          "unit": "points/min",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "P07",
+          "label": "Différence d’or à 15 min",
+          "value": -87.0381679389313,
+          "unit": "or",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "P08",
+          "label": "Taille du pool",
+          "value": 18,
+          "unit": "champions",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "P09",
+          "label": "Taux de victoire",
+          "value": 55.72519083969466,
+          "unit": "%",
+          "sample_size": 131,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        }
+      ]
+    }
+  ],
+  "draft": [
+    {
+      "champion": "Azir",
+      "metrics": [
+        {
+          "id": "D01",
+          "label": "Pick rate",
+          "value": 7.633587786259542,
+          "unit": "%",
+          "sample_size": 10,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D02",
+          "label": "Ban rate",
+          "value": 35.87786259541985,
+          "unit": "%",
+          "sample_size": 47,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D03",
+          "label": "Présence pick/ban",
+          "value": 43.51145038167939,
+          "unit": "%",
+          "sample_size": 57,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D04",
+          "label": "Victoire avec le champion",
+          "value": 50.0,
+          "unit": "%",
+          "sample_size": 10,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        }
+      ]
+    },
+    {
+      "champion": "Poppy",
+      "metrics": [
+        {
+          "id": "D01",
+          "label": "Pick rate",
+          "value": 9.923664122137405,
+          "unit": "%",
+          "sample_size": 13,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D02",
+          "label": "Ban rate",
+          "value": 29.00763358778626,
+          "unit": "%",
+          "sample_size": 38,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D03",
+          "label": "Présence pick/ban",
+          "value": 38.93129770992366,
+          "unit": "%",
+          "sample_size": 51,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D04",
+          "label": "Victoire avec le champion",
+          "value": 76.92307692307693,
+          "unit": "%",
+          "sample_size": 13,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        }
+      ]
+    },
+    {
+      "champion": "Kalista",
+      "metrics": [
+        {
+          "id": "D01",
+          "label": "Pick rate",
+          "value": 3.053435114503817,
+          "unit": "%",
+          "sample_size": 4,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D02",
+          "label": "Ban rate",
+          "value": 35.11450381679389,
+          "unit": "%",
+          "sample_size": 46,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D03",
+          "label": "Présence pick/ban",
+          "value": 38.16793893129771,
+          "unit": "%",
+          "sample_size": 50,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D04",
+          "label": "Victoire avec le champion",
+          "value": 25.0,
+          "unit": "%",
+          "sample_size": 4,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        }
+      ]
+    },
+    {
+      "champion": "Vi",
+      "metrics": [
+        {
+          "id": "D01",
+          "label": "Pick rate",
+          "value": 5.343511450381679,
+          "unit": "%",
+          "sample_size": 7,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D02",
+          "label": "Ban rate",
+          "value": 22.900763358778626,
+          "unit": "%",
+          "sample_size": 30,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D03",
+          "label": "Présence pick/ban",
+          "value": 28.244274809160306,
+          "unit": "%",
+          "sample_size": 37,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D04",
+          "label": "Victoire avec le champion",
+          "value": 42.857142857142854,
+          "unit": "%",
+          "sample_size": 7,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        }
+      ]
+    },
+    {
+      "champion": "Rakan",
+      "metrics": [
+        {
+          "id": "D01",
+          "label": "Pick rate",
+          "value": 7.633587786259542,
+          "unit": "%",
+          "sample_size": 10,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D02",
+          "label": "Ban rate",
+          "value": 19.84732824427481,
+          "unit": "%",
+          "sample_size": 26,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D03",
+          "label": "Présence pick/ban",
+          "value": 27.480916030534353,
+          "unit": "%",
+          "sample_size": 36,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D04",
+          "label": "Victoire avec le champion",
+          "value": 40.0,
+          "unit": "%",
+          "sample_size": 10,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        }
+      ]
+    },
+    {
+      "champion": "Pantheon",
+      "metrics": [
+        {
+          "id": "D01",
+          "label": "Pick rate",
+          "value": 9.923664122137405,
+          "unit": "%",
+          "sample_size": 13,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D02",
+          "label": "Ban rate",
+          "value": 14.50381679389313,
+          "unit": "%",
+          "sample_size": 19,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D03",
+          "label": "Présence pick/ban",
+          "value": 24.427480916030536,
+          "unit": "%",
+          "sample_size": 32,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D04",
+          "label": "Victoire avec le champion",
+          "value": 53.84615384615385,
+          "unit": "%",
+          "sample_size": 13,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        }
+      ]
+    },
+    {
+      "champion": "Kai'Sa",
+      "metrics": [
+        {
+          "id": "D01",
+          "label": "Pick rate",
+          "value": 9.923664122137405,
+          "unit": "%",
+          "sample_size": 13,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D02",
+          "label": "Ban rate",
+          "value": 13.740458015267176,
+          "unit": "%",
+          "sample_size": 18,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D03",
+          "label": "Présence pick/ban",
+          "value": 23.66412213740458,
+          "unit": "%",
+          "sample_size": 31,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D04",
+          "label": "Victoire avec le champion",
+          "value": 46.15384615384615,
+          "unit": "%",
+          "sample_size": 13,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        }
+      ]
+    },
+    {
+      "champion": "Aurora",
+      "metrics": [
+        {
+          "id": "D01",
+          "label": "Pick rate",
+          "value": 9.16030534351145,
+          "unit": "%",
+          "sample_size": 12,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D02",
+          "label": "Ban rate",
+          "value": 13.740458015267176,
+          "unit": "%",
+          "sample_size": 18,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D03",
+          "label": "Présence pick/ban",
+          "value": 22.900763358778626,
+          "unit": "%",
+          "sample_size": 30,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D04",
+          "label": "Victoire avec le champion",
+          "value": 83.33333333333334,
+          "unit": "%",
+          "sample_size": 12,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        }
+      ]
+    },
+    {
+      "champion": "Yone",
+      "metrics": [
+        {
+          "id": "D01",
+          "label": "Pick rate",
+          "value": 3.816793893129771,
+          "unit": "%",
+          "sample_size": 5,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D02",
+          "label": "Ban rate",
+          "value": 19.083969465648856,
+          "unit": "%",
+          "sample_size": 25,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D03",
+          "label": "Présence pick/ban",
+          "value": 22.900763358778626,
+          "unit": "%",
+          "sample_size": 30,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D04",
+          "label": "Victoire avec le champion",
+          "value": 60.0,
+          "unit": "%",
+          "sample_size": 5,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        }
+      ]
+    },
+    {
+      "champion": "Wukong",
+      "metrics": [
+        {
+          "id": "D01",
+          "label": "Pick rate",
+          "value": 11.450381679389313,
+          "unit": "%",
+          "sample_size": 15,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D02",
+          "label": "Ban rate",
+          "value": 10.687022900763358,
+          "unit": "%",
+          "sample_size": 14,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D03",
+          "label": "Présence pick/ban",
+          "value": 22.137404580152673,
+          "unit": "%",
+          "sample_size": 29,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D04",
+          "label": "Victoire avec le champion",
+          "value": 33.33333333333333,
+          "unit": "%",
+          "sample_size": 15,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        }
+      ]
+    },
+    {
+      "champion": "Braum",
+      "metrics": [
+        {
+          "id": "D01",
+          "label": "Pick rate",
+          "value": 10.687022900763358,
+          "unit": "%",
+          "sample_size": 14,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D02",
+          "label": "Ban rate",
+          "value": 11.450381679389313,
+          "unit": "%",
+          "sample_size": 15,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D03",
+          "label": "Présence pick/ban",
+          "value": 22.137404580152673,
+          "unit": "%",
+          "sample_size": 29,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D04",
+          "label": "Victoire avec le champion",
+          "value": 64.28571428571429,
+          "unit": "%",
+          "sample_size": 14,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        }
+      ]
+    },
+    {
+      "champion": "Ahri",
+      "metrics": [
+        {
+          "id": "D01",
+          "label": "Pick rate",
+          "value": 18.3206106870229,
+          "unit": "%",
+          "sample_size": 24,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D02",
+          "label": "Ban rate",
+          "value": 1.5267175572519085,
+          "unit": "%",
+          "sample_size": 2,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D03",
+          "label": "Présence pick/ban",
+          "value": 19.84732824427481,
+          "unit": "%",
+          "sample_size": 26,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D04",
+          "label": "Victoire avec le champion",
+          "value": 54.166666666666664,
+          "unit": "%",
+          "sample_size": 24,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        }
+      ]
+    },
+    {
+      "champion": "Varus",
+      "metrics": [
+        {
+          "id": "D01",
+          "label": "Pick rate",
+          "value": 9.923664122137405,
+          "unit": "%",
+          "sample_size": 13,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D02",
+          "label": "Ban rate",
+          "value": 9.923664122137405,
+          "unit": "%",
+          "sample_size": 13,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D03",
+          "label": "Présence pick/ban",
+          "value": 19.84732824427481,
+          "unit": "%",
+          "sample_size": 26,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D04",
+          "label": "Victoire avec le champion",
+          "value": 53.84615384615385,
+          "unit": "%",
+          "sample_size": 13,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        }
+      ]
+    },
+    {
+      "champion": "Nautilus",
+      "metrics": [
+        {
+          "id": "D01",
+          "label": "Pick rate",
+          "value": 9.16030534351145,
+          "unit": "%",
+          "sample_size": 12,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D02",
+          "label": "Ban rate",
+          "value": 9.923664122137405,
+          "unit": "%",
+          "sample_size": 13,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D03",
+          "label": "Présence pick/ban",
+          "value": 19.083969465648856,
+          "unit": "%",
+          "sample_size": 25,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D04",
+          "label": "Victoire avec le champion",
+          "value": 58.333333333333336,
+          "unit": "%",
+          "sample_size": 12,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        }
+      ]
+    },
+    {
+      "champion": "Rumble",
+      "metrics": [
+        {
+          "id": "D01",
+          "label": "Pick rate",
+          "value": 10.687022900763358,
+          "unit": "%",
+          "sample_size": 14,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D02",
+          "label": "Ban rate",
+          "value": 7.633587786259542,
+          "unit": "%",
+          "sample_size": 10,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D03",
+          "label": "Présence pick/ban",
+          "value": 18.3206106870229,
+          "unit": "%",
+          "sample_size": 24,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        },
+        {
+          "id": "D04",
+          "label": "Victoire avec le champion",
+          "value": 64.28571428571429,
+          "unit": "%",
+          "sample_size": 14,
+          "eligible_sample_size": 131,
+          "benchmark": null,
+          "delta": null
+        }
+      ]
+    }
+  ],
+  "trends": [
+    {
+      "week": "2025-01-13",
+      "matches": 5,
+      "win_rate": 80.0,
+      "gold_diff_at_15": 744.6,
+      "kills_per_game": 16.6
+    },
+    {
+      "week": "2025-01-20",
+      "matches": 6,
+      "win_rate": 66.66666666666666,
+      "gold_diff_at_15": 656.1666666666666,
+      "kills_per_game": 15.833333333333334
+    },
+    {
+      "week": "2025-01-27",
+      "matches": 3,
+      "win_rate": 66.66666666666666,
+      "gold_diff_at_15": -682.6666666666666,
+      "kills_per_game": 12.333333333333334
+    },
+    {
+      "week": "2025-02-10",
+      "matches": 4,
+      "win_rate": 75.0,
+      "gold_diff_at_15": -433.0,
+      "kills_per_game": 16.25
+    },
+    {
+      "week": "2025-02-17",
+      "matches": 8,
+      "win_rate": 25.0,
+      "gold_diff_at_15": -1821.0,
+      "kills_per_game": 12.125
+    },
+    {
+      "week": "2025-03-31",
+      "matches": 5,
+      "win_rate": 80.0,
+      "gold_diff_at_15": 1248.8,
+      "kills_per_game": 16.2
+    },
+    {
+      "week": "2025-04-07",
+      "matches": 5,
+      "win_rate": 60.0,
+      "gold_diff_at_15": 1158.4,
+      "kills_per_game": 13.4
+    },
+    {
+      "week": "2025-04-14",
+      "matches": 5,
+      "win_rate": 80.0,
+      "gold_diff_at_15": 312.4,
+      "kills_per_game": 18.0
+    },
+    {
+      "week": "2025-04-21",
+      "matches": 6,
+      "win_rate": 33.33333333333333,
+      "gold_diff_at_15": -157.0,
+      "kills_per_game": 14.5
+    },
+    {
+      "week": "2025-04-28",
+      "matches": 5,
+      "win_rate": 20.0,
+      "gold_diff_at_15": -848.4,
+      "kills_per_game": 10.2
+    },
+    {
+      "week": "2025-05-05",
+      "matches": 4,
+      "win_rate": 0.0,
+      "gold_diff_at_15": -556.0,
+      "kills_per_game": 9.0
+    },
+    {
+      "week": "2025-05-12",
+      "matches": 5,
+      "win_rate": 80.0,
+      "gold_diff_at_15": 419.2,
+      "kills_per_game": 21.4
+    },
+    {
+      "week": "2025-05-19",
+      "matches": 5,
+      "win_rate": 40.0,
+      "gold_diff_at_15": 253.8,
+      "kills_per_game": 10.8
+    },
+    {
+      "week": "2025-05-26",
+      "matches": 6,
+      "win_rate": 66.66666666666666,
+      "gold_diff_at_15": 527.8333333333334,
+      "kills_per_game": 17.166666666666668
+    },
+    {
+      "week": "2025-06-02",
+      "matches": 6,
+      "win_rate": 16.666666666666664,
+      "gold_diff_at_15": -438.1666666666667,
+      "kills_per_game": 10.666666666666666
+    },
+    {
+      "week": "2025-07-21",
+      "matches": 5,
+      "win_rate": 60.0,
+      "gold_diff_at_15": 586.2,
+      "kills_per_game": 12.8
+    },
+    {
+      "week": "2025-07-28",
+      "matches": 5,
+      "win_rate": 80.0,
+      "gold_diff_at_15": 520.0,
+      "kills_per_game": 17.8
+    },
+    {
+      "week": "2025-08-04",
+      "matches": 4,
+      "win_rate": 50.0,
+      "gold_diff_at_15": 369.0,
+      "kills_per_game": 15.75
+    },
+    {
+      "week": "2025-08-11",
+      "matches": 4,
+      "win_rate": 50.0,
+      "gold_diff_at_15": 435.25,
+      "kills_per_game": 14.0
+    },
+    {
+      "week": "2025-08-18",
+      "matches": 5,
+      "win_rate": 80.0,
+      "gold_diff_at_15": 726.0,
+      "kills_per_game": 23.6
+    },
+    {
+      "week": "2025-08-25",
+      "matches": 5,
+      "win_rate": 80.0,
+      "gold_diff_at_15": 967.2,
+      "kills_per_game": 15.2
+    },
+    {
+      "week": "2025-09-01",
+      "matches": 12,
+      "win_rate": 66.66666666666666,
+      "gold_diff_at_15": 727.5833333333334,
+      "kills_per_game": 14.25
+    },
+    {
+      "week": "2025-09-08",
+      "matches": 5,
+      "win_rate": 40.0,
+      "gold_diff_at_15": 38.4,
+      "kills_per_game": 11.2
+    },
+    {
+      "week": "2025-09-15",
+      "matches": 8,
+      "win_rate": 50.0,
+      "gold_diff_at_15": -35.625,
+      "kills_per_game": 14.25
+    }
+  ]
+}

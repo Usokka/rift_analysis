@@ -75,7 +75,7 @@ La présence mesure les picks et bans effectués par T1, dédupliqués par parti
 
 ## Limites
 
-- Oracle’s Elixir agrège des compétitions de niveaux différents ; cette étude se limite explicitement à la LCK.
+- Oracle’s Elixir agrège des compétitions de niveaux différents ; cette étude se limite explicitement à LCK.
 - Le benchmark n’ajuste pas la force des adversaires, le patch, les changements de roster ou la phase de compétition.
 - Les corrélations entre early game, objectifs, draft et victoire ne démontrent pas de causalité.
 - Les KPI dont la couverture est incomplète conservent leur dénominateur réel dans l’interface.
