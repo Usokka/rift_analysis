@@ -105,7 +105,10 @@ jobs:
           uv run python scripts/build_portfolio_demo.py \
             data/raw/2023_LoL_esports_match_data_from_OraclesElixir.csv \
             data/raw/2025_LoL_esports_match_data_from_OraclesElixir.csv
-          git diff --exit-code -- apps/web/public/demo docs/case-study-t1-2025.md
+          git diff --exit-code -- \
+            apps/web/public/demo \
+            docs/case-study-t1-2025.md \
+            docs/case-study-karmine-corp-2025.md
       - uses: actions/upload-artifact@v4
         with:
           name: rift-analyst-full-data-proof

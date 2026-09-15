@@ -1,8 +1,8 @@
 # Rift Analyst
 
-Plateforme d’analyse de performances esport League of Legends construite avec un pipeline reproductible, PostgreSQL, FastAPI et React. Elle transforme les exports Oracle’s Elixir en 28 KPIs équipe, joueur et draft, puis compare une équipe à sa ligue sur la même période.
+Plateforme d’analyse de performances esport League of Legends construite avec un pipeline reproductible, PostgreSQL, FastAPI et React. Elle transforme les exports Oracle’s Elixir en 28 KPIs équipe, joueur et draft, puis compare deux équipes dans le même contexte de ligue et de saison.
 
-**[Ouvrir la démo publique](https://usokka.github.io/rift_analysis/)** · instantané T1 / LCK 2025 calculé sur le corpus vérifié. La [courte étude d’équipe](docs/case-study-t1-2025.md) documente les observations, les échantillons et les limites.
+**[Ouvrir la démo publique](https://usokka.github.io/rift_analysis/)** · 5 ligues, 30 équipes et comparaison A/B à partir d’instantanés 2025 calculés sur le corpus vérifié. Les études [T1 / LCK](docs/case-study-t1-2025.md) et [Karmine Corp / LEC](docs/case-study-karmine-corp-2025.md) documentent les observations, les échantillons et les limites.
 
 ## Aperçu du dashboard
 
@@ -38,7 +38,10 @@ Une partie Oracle’s Elixir contient normalement 12 lignes (10 joueurs et 2 éq
 - Modèle analytique matchs, statistiques équipe/joueur et actions de draft.
 - 28 KPIs avec unité, effectif, couverture et benchmark de ligue.
 - Filtres par ligue, saison, split, équipe et période.
-- Vues Overview, Team, Players, Draft et Trends, sans valeur analytique codée en dur dans React.
+- Catalogue public de 30 équipes réparties sur LCK, LPL, LEC, LTA North et LFL.
+- Comparaison de deux équipes sur un périmètre identique, avec lecture automatique de signaux descriptifs.
+- Export CSV des 15 KPIs équipe, benchmarks, unités et tailles d’échantillon.
+- Vues Overview, Compare, Team, Players, Draft et Trends, sans valeur analytique codée en dur dans React.
 
 ## Démarrage
 
@@ -116,10 +119,11 @@ make check
 
 Cette commande exécute Ruff, pytest, ESLint, TypeScript et le build frontend. La CI ajoute PostgreSQL réel, le cycle Alembic, l’ingestion idempotente, Docker Compose et le test de reprise du proxy après recréation de l’API. La PR de livraison exécute aussi un contrôle complet sur les deux exports et publie la preuve comme artefact.
 
-`make portfolio-demo` régénère l’instantané public et l’étude T1 à partir des deux exports épinglés. La CI full-data refuse toute divergence entre les fichiers publiés et ce calcul reproductible.
+`make portfolio-demo` régénère les 30 instantanés publics et les deux études d’équipe à partir des exports épinglés. La CI full-data refuse toute divergence entre les fichiers publiés et ce calcul reproductible.
 
 - [Contrats des métriques](docs/metrics.md)
 - [Architecture](docs/architecture.md)
 - [Étude T1 / LCK 2025](docs/case-study-t1-2025.md)
+- [Étude Karmine Corp / LEC 2025](docs/case-study-karmine-corp-2025.md)
 - [Roadmap](docs/ROADMAP.md)
 - [Migrations](docs/migrations.md)

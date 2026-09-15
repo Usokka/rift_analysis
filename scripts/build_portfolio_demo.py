@@ -1,7 +1,11 @@
 # ruff: noqa: E501
 import argparse
+import hashlib
 import json
-from collections import Counter, defaultdict
+import re
+import shutil
+import unicodedata
+from collections import defaultdict
 from datetime import date, timedelta
 from pathlib import Path
 from statistics import fmean
@@ -13,6 +17,14 @@ from app.ingestion.oracle_elixir import (
     transform_game,
 )
 from app.services.analytics import DRAFT_METRICS, PLAYER_METRICS, TEAM_METRICS
+
+DEFAULT_SELECTIONS = (
+    ("LCK", 2025),
+    ("LPL", 2025),
+    ("LEC", 2025),
+    ("LTA N", 2025),
+    ("LFL", 2025),
+)
 
 
 def mean(records: list[dict], key: str) -> float | None:
@@ -361,7 +373,7 @@ La présence mesure les picks et bans effectués par {filters["team_name"]}, dé
 
 ## Limites
 
-- Oracle’s Elixir agrège des compétitions de niveaux différents ; cette étude se limite explicitement à la LCK.
+- Oracle’s Elixir agrège des compétitions de niveaux différents ; cette étude se limite explicitement à {filters["league"]}.
 - Le benchmark n’ajuste pas la force des adversaires, le patch, les changements de roster ou la phase de compétition.
 - Les corrélations entre early game, objectifs, draft et victoire ne démontrent pas de causalité.
 - Les KPI dont la couverture est incomplète conservent leur dénominateur réel dans l’interface.
@@ -374,20 +386,74 @@ La présence mesure les picks et bans effectués par {filters["team_name"]}, dé
     )
 
 
-def build(args) -> tuple[dict, dict]:
+def _slug(value: str) -> str:
+    normalized = unicodedata.normalize("NFKD", value).encode("ascii", "ignore").decode()
+    return re.sub(r"[^a-z0-9]+", "-", normalized.lower()).strip("-") or "team"
+
+
+def _snapshot_path(league: str, year: int, team_name: str, team_id: str) -> str:
+    suffix = hashlib.sha1(team_id.encode()).hexdigest()[:8]
+    return f"overviews/{year}/{_slug(league)}/{_slug(team_name)}-{suffix}.json"
+
+
+def _overview(
+    *,
+    league: str,
+    year: int,
+    team_id: str,
+    team_name: str,
+    team_rows: list[dict],
+    player_rows: list[dict],
+    draft_rows: list[dict],
+    matches: dict[str, dict],
+    benchmark: dict,
+) -> dict:
+    team = team_aggregate(team_rows, matches)
+    team["n_matches"] = team["matches_played"]
+    return {
+        "filters": {
+            "league": league,
+            "year": year,
+            "team_id": team_id,
+            "team_name": team_name,
+            "split": None,
+            "start_date": None,
+            "end_date": None,
+        },
+        "team_metrics": [metric(spec, team, len(team_rows), benchmark) for spec in TEAM_METRICS],
+        "players": player_summaries(player_rows, matches),
+        "draft": draft_summaries(draft_rows, team_rows, matches),
+        "trends": trends(team_rows, matches),
+    }
+
+
+def build_catalog(
+    sources: list[Path],
+    selections: tuple[tuple[str, int], ...] = DEFAULT_SELECTIONS,
+    teams_per_league: int = 6,
+    min_team_matches: int = 30,
+    preferred_team_names: tuple[str, ...] = ("T1", "Gen.G", "Karmine Corp"),
+) -> tuple[dict, dict[str, dict]]:
     all_matches: set[str] = set()
     raw_rows = 0
     rejected_rows = 0
     matches: dict[str, dict] = {}
-    league_teams: list[dict] = []
-    target_teams: list[dict] = []
-    target_players: list[dict] = []
-    target_draft: list[dict] = []
-    league_matches: set[str] = set()
-    splits: set[str] = set()
-    target_ids: Counter[str] = Counter()
+    selection_set = set(selections)
+    league_matches: dict[tuple[str, int], set[str]] = defaultdict(set)
+    league_teams: dict[tuple[str, int], list[dict]] = defaultdict(list)
+    team_rows: dict[tuple[str, int], dict[str, list[dict]]] = defaultdict(lambda: defaultdict(list))
+    player_rows: dict[tuple[str, int], dict[str, list[dict]]] = defaultdict(
+        lambda: defaultdict(list)
+    )
+    draft_rows: dict[tuple[str, int], dict[str, list[dict]]] = defaultdict(
+        lambda: defaultdict(list)
+    )
+    team_names: dict[tuple[str, int], dict[str, dict[str, int]]] = defaultdict(
+        lambda: defaultdict(lambda: defaultdict(int))
+    )
+    splits: dict[tuple[str, int], set[str]] = defaultdict(set)
 
-    for source in args.sources:
+    for source in sources:
         for game_id, rows in iter_grouped_games(source):
             raw_rows += len(rows)
             try:
@@ -396,101 +462,214 @@ def build(args) -> tuple[dict, dict]:
                 rejected_rows += len(rows)
                 continue
             all_matches.add(game_id)
-            if records.match["league"] != args.league or records.match["year"] != args.year:
+            key = (records.match["league"], records.match["year"])
+            if key not in selection_set:
                 continue
             matches[game_id] = records.match
-            league_matches.add(game_id)
+            league_matches[key].add(game_id)
             if records.match["split"]:
-                splits.add(records.match["split"])
-            league_teams.extend(records.teams)
-            selected = [team for team in records.teams if team["team_name"] == args.team_name]
-            if not selected:
-                continue
-            target_teams.extend(selected)
-            target_ids.update(team["team_id"] for team in selected)
-            target_players.extend(
-                player for player in records.players if player["team_name"] == args.team_name
-            )
-            target_draft.extend(
-                action for action in records.draft if action["team_name"] == args.team_name
-            )
-    if not target_teams:
-        raise SystemExit(
-            f"No accepted matches found for {args.team_name} in {args.league} {args.year}"
-        )
+                splits[key].add(records.match["split"])
+            league_teams[key].extend(records.teams)
+            for team in records.teams:
+                team_id = team["team_id"]
+                team_rows[key][team_id].append(team)
+                team_names[key][team_id][team["team_name"]] += 1
+            for player in records.players:
+                player_rows[key][player["team_id"]].append(player)
+            for action in records.draft:
+                draft_rows[key][action["team_id"]].append(action)
 
-    team_id = target_ids.most_common(1)[0][0]
-    team = team_aggregate(target_teams, matches)
-    benchmark = team_aggregate(league_teams, matches)
-    team["n_matches"] = team["matches_played"]
-    benchmark["n_matches"] = benchmark["matches_played"]
-    overview = {
-        "filters": {
-            "league": args.league,
-            "year": args.year,
-            "team_id": team_id,
-            "team_name": args.team_name,
-            "split": None,
-            "start_date": None,
-            "end_date": None,
-        },
-        "team_metrics": [metric(spec, team, len(target_teams), benchmark) for spec in TEAM_METRICS],
-        "players": player_summaries(target_players, matches),
-        "draft": draft_summaries(target_draft, target_teams, matches),
-        "trends": trends(target_teams, matches),
-    }
+    overviews: dict[str, dict] = {}
+    metadata_teams: list[dict] = []
+    for league, year in selections:
+        key = (league, year)
+        if not league_matches[key]:
+            continue
+        benchmark = team_aggregate(league_teams[key], matches)
+        benchmark["n_matches"] = benchmark["matches_played"]
+        ranked = sorted(
+            (
+                (
+                    team_id,
+                    max(names, key=lambda name: (names[name], name)),
+                    len(rows),
+                )
+                for team_id, rows in team_rows[key].items()
+                if len(rows) >= min_team_matches
+                for names in (team_names[key][team_id],)
+            ),
+            key=lambda item: (-item[2], item[1]),
+        )
+        preferred = [item for name in preferred_team_names for item in ranked if item[1] == name]
+        selected: list[tuple[str, str, int]] = []
+        for item in [*preferred, *ranked]:
+            if item[0] not in {current[0] for current in selected}:
+                selected.append(item)
+            if len(selected) >= teams_per_league:
+                break
+        for team_id, team_name, team_matches in selected:
+            snapshot = _snapshot_path(league, year, team_name, team_id)
+            overviews[snapshot] = _overview(
+                league=league,
+                year=year,
+                team_id=team_id,
+                team_name=team_name,
+                team_rows=team_rows[key][team_id],
+                player_rows=player_rows[key][team_id],
+                draft_rows=draft_rows[key][team_id],
+                matches=matches,
+                benchmark=benchmark,
+            )
+            metadata_teams.append(
+                {
+                    "team_id": team_id,
+                    "team_name": team_name,
+                    "league": league,
+                    "year": year,
+                    "matches": team_matches,
+                    "snapshot": snapshot,
+                }
+            )
+
+    if not metadata_teams:
+        raise SystemExit("No accepted teams found for the requested demo selections")
+
+    primary = next(
+        (team for team in metadata_teams if team["team_name"] == preferred_team_names[0]),
+        metadata_teams[0],
+    )
+    comparison = next(
+        (
+            team
+            for team in metadata_teams
+            if team["league"] == primary["league"]
+            and team["year"] == primary["year"]
+            and team["team_name"] == preferred_team_names[1]
+        ),
+        next(
+            team
+            for team in metadata_teams
+            if team["league"] == primary["league"]
+            and team["year"] == primary["year"]
+            and team["team_id"] != primary["team_id"]
+        ),
+    )
     metadata = {
         "data_status": {
             "matches": len(all_matches),
             "raw_rows": raw_rows,
-            "source_files": len(args.sources),
+            "source_files": len(sources),
             "rejected_rows": rejected_rows,
             "last_imported_at": None,
         },
-        "leagues": [{"league": args.league, "year": args.year, "matches": len(league_matches)}],
+        "leagues": [
+            {"league": league, "year": year, "matches": len(league_matches[(league, year)])}
+            for league, year in selections
+            if league_matches[(league, year)]
+        ],
         "splits": [
-            {"league": args.league, "year": args.year, "split": split} for split in sorted(splits)
+            {"league": league, "year": year, "split": split}
+            for league, year in selections
+            for split in sorted(splits[(league, year)])
         ],
-        "teams": [
-            {
-                "team_id": team_id,
-                "team_name": args.team_name,
-                "league": args.league,
-                "year": args.year,
-                "matches": len(target_teams),
-            }
-        ],
+        "teams": metadata_teams,
+        "default_selection": {
+            "league": primary["league"],
+            "year": primary["year"],
+            "team_id": primary["team_id"],
+            "comparison_team_id": comparison["team_id"],
+        },
     }
-    return metadata, overview
+    return metadata, overviews
+
+
+def _parse_selection(value: str) -> tuple[str, int]:
+    try:
+        league, year = value.rsplit(":", 1)
+        return league, int(year)
+    except ValueError as error:
+        raise argparse.ArgumentTypeError("selection must use LEAGUE:YEAR") from error
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Build the static portfolio demo and case study")
+    parser = argparse.ArgumentParser(description="Build the static multi-team portfolio demo")
     parser.add_argument("sources", nargs="+", type=Path)
-    parser.add_argument("--league", default="LCK")
-    parser.add_argument("--year", type=int, default=2025)
-    parser.add_argument("--team-name", default="T1")
+    parser.add_argument("--selection", action="append", type=_parse_selection)
+    parser.add_argument("--teams-per-league", type=int, default=6)
+    parser.add_argument("--min-team-matches", type=int, default=30)
+    parser.add_argument("--primary-team", default="T1")
+    parser.add_argument("--comparison-team", default="Gen.G")
+    parser.add_argument("--secondary-case-study-team", default="Karmine Corp")
     parser.add_argument("--demo-dir", type=Path, default=Path("apps/web/public/demo"))
     parser.add_argument("--case-study", type=Path, default=Path("docs/case-study-t1-2025.md"))
+    parser.add_argument(
+        "--secondary-case-study",
+        type=Path,
+        default=Path("docs/case-study-karmine-corp-2025.md"),
+    )
     args = parser.parse_args()
-    metadata, overview = build(args)
+    selections = tuple(args.selection) if args.selection else DEFAULT_SELECTIONS
+    preferred = (
+        args.primary_team,
+        args.comparison_team,
+        args.secondary_case_study_team,
+    )
+    metadata, overviews = build_catalog(
+        args.sources,
+        selections=selections,
+        teams_per_league=args.teams_per_league,
+        min_team_matches=args.min_team_matches,
+        preferred_team_names=preferred,
+    )
     args.demo_dir.mkdir(parents=True, exist_ok=True)
     args.case_study.parent.mkdir(parents=True, exist_ok=True)
+    overview_dir = args.demo_dir / "overviews"
+    if overview_dir.exists():
+        shutil.rmtree(overview_dir)
     (args.demo_dir / "metadata.json").write_text(
         json.dumps(metadata, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
     )
-    (args.demo_dir / "overview.json").write_text(
-        json.dumps(overview, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+    for relative_path, overview in overviews.items():
+        destination = args.demo_dir / relative_path
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_text(
+            json.dumps(overview, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+        )
+    primary = next(
+        overview
+        for overview in overviews.values()
+        if overview["filters"]["team_id"] == metadata["default_selection"]["team_id"]
     )
-    args.case_study.write_text(case_study(overview, metadata, args.sources), encoding="utf-8")
+    (args.demo_dir / "overview.json").write_text(
+        json.dumps(primary, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+    )
+    args.case_study.write_text(case_study(primary, metadata, args.sources), encoding="utf-8")
+    secondary = next(
+        (
+            overview
+            for overview in overviews.values()
+            if overview["filters"]["team_name"] == args.secondary_case_study_team
+        ),
+        None,
+    )
+    if secondary is None:
+        raise SystemExit(
+            f"No snapshot found for secondary case study team {args.secondary_case_study_team}"
+        )
+    args.secondary_case_study.parent.mkdir(parents=True, exist_ok=True)
+    args.secondary_case_study.write_text(
+        case_study(secondary, metadata, args.sources), encoding="utf-8"
+    )
     print(
         json.dumps(
             {
                 "metadata": str(args.demo_dir / "metadata.json"),
-                "overview": str(args.demo_dir / "overview.json"),
+                "overviews": len(overviews),
                 "case_study": str(args.case_study),
+                "secondary_case_study": str(args.secondary_case_study),
                 "matches": metadata["data_status"]["matches"],
-                "team_matches": overview["team_metrics"][0]["sample_size"],
+                "leagues": len(metadata["leagues"]),
+                "teams": len(metadata["teams"]),
             },
             ensure_ascii=False,
         )

@@ -12,7 +12,7 @@
 | API avec 28 KPIs, filtres et benchmark ligue | Implémenté |
 | Dashboard Overview/Team/Players/Draft/Trends | Implémenté |
 | Corpus mesuré | 20 871 matchs acceptés sur 20 901 `gameid` distincts |
-| Démo publique et étude d’équipe | Snapshot T1 / LCK 2025 et déploiement GitHub Pages automatisés |
+| Démo publique et études d’équipe | 30 snapshots sur 5 ligues, comparaison A/B, exports et déploiement GitHub Pages automatisés |
 
 ## Ordre des versions
 
@@ -24,17 +24,18 @@
 | 0.4 — première verticale | 15 KPIs équipe, endpoint Overview, filtres et comparaison ligue | Implémenté |
 | 0.5 — couverture analytique | 28 contrats, joueurs par rôle, drafts, sides et tendances | Implémenté |
 | 1.0 — portfolio | Vues Team/Players/Draft/Trends, corpus reproductible et preuves chiffrées | Livré ; démo statique reproductible et étude T1 publiées |
-| 1.1 — confort analyste | Comparaison de deux équipes, export de rapport, détail d’un match | Cas d’usage validé sur données réelles et comparaison cohérente de filtres |
+| 1.1 — confort analyste | Comparaison de deux équipes, filtres publics, signaux descriptifs et export CSV | Livré sur 30 équipes de 5 ligues avec un périmètre identique par comparaison |
+| 1.2 — exploration match | Détail d’un match et navigation depuis les tendances | Match traçable jusqu’aux observations équipe, joueur et draft |
 | 2.0 — analyses approfondies | Analyse par patch, conversion d’avance, scouting ; Riot uniquement si l’accès aux matchs visés est vérifié | Provenance et couverture de chaque enrichissement ; aucune dépendance Riot obligatoire |
 | 3.0 — expérimentation | Similarité joueurs/équipes, clustering, éventuellement prédiction | Baselines, séparation temporelle entraînement/test, absence de fuite et limites documentées |
 
 Pas de LLM, Airflow, Redis ou infrastructure supplémentaire avant un besoin mesuré. Importer par lots pour rester compatible avec une machine à 4 Go de RAM. Les calculs de référence restent côté SQL/backend.
 
-## Prochain incrément : confort analyste
+## Prochain incrément : exploration match
 
-1. Comparer deux équipes avec le même périmètre de filtres.
-2. Exporter un rapport et ouvrir le détail d’un match.
-3. Ajouter une analyse par patch et mesurer la conversion d’un avantage à 15 minutes.
+1. Ouvrir le détail d’un match depuis une semaine de tendances.
+2. Relier le résumé aux dix joueurs, aux deux équipes et aux actions de draft normalisées.
+3. Ajouter ensuite une analyse par patch et mesurer la conversion d’un avantage à 15 minutes.
 4. Déployer le backend complet uniquement si un hébergement PostgreSQL pérenne est disponible ; la démo GitHub Pages reste un snapshot sans coût ni secret.
 
 ## Première verticale livrée : 0.4

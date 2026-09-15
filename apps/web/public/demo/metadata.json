@@ -11,6 +11,26 @@
       "league": "LCK",
       "year": 2025,
       "matches": 555
+    },
+    {
+      "league": "LPL",
+      "year": 2025,
+      "matches": 805
+    },
+    {
+      "league": "LEC",
+      "year": 2025,
+      "matches": 306
+    },
+    {
+      "league": "LTA N",
+      "year": 2025,
+      "matches": 189
+    },
+    {
+      "league": "LFL",
+      "year": 2025,
+      "matches": 306
     }
   ],
   "splits": [
@@ -28,6 +48,71 @@
       "league": "LCK",
       "year": 2025,
       "split": "Rounds 3-5"
+    },
+    {
+      "league": "LPL",
+      "year": 2025,
+      "split": "Split 1"
+    },
+    {
+      "league": "LPL",
+      "year": 2025,
+      "split": "Split 2"
+    },
+    {
+      "league": "LPL",
+      "year": 2025,
+      "split": "Split 2 Placements"
+    },
+    {
+      "league": "LPL",
+      "year": 2025,
+      "split": "Split 3"
+    },
+    {
+      "league": "LEC",
+      "year": 2025,
+      "split": "Spring"
+    },
+    {
+      "league": "LEC",
+      "year": 2025,
+      "split": "Summer"
+    },
+    {
+      "league": "LEC",
+      "year": 2025,
+      "split": "Winter"
+    },
+    {
+      "league": "LTA N",
+      "year": 2025,
+      "split": "Split 1"
+    },
+    {
+      "league": "LTA N",
+      "year": 2025,
+      "split": "Split 2"
+    },
+    {
+      "league": "LTA N",
+      "year": 2025,
+      "split": "Split 3"
+    },
+    {
+      "league": "LFL",
+      "year": 2025,
+      "split": "Flash In"
+    },
+    {
+      "league": "LFL",
+      "year": 2025,
+      "split": "Spring"
+    },
+    {
+      "league": "LFL",
+      "year": 2025,
+      "split": "Summer"
     }
   ],
   "teams": [
@@ -36,7 +121,246 @@
       "team_name": "T1",
       "league": "LCK",
       "year": 2025,
-      "matches": 115
+      "matches": 115,
+      "snapshot": "overviews/2025/lck/t1-9b50358d.json"
+    },
+    {
+      "team_id": "oe:team:50f58982d91a36557ec8aec52ab014f",
+      "team_name": "Gen.G",
+      "league": "LCK",
+      "year": 2025,
+      "matches": 121,
+      "snapshot": "overviews/2025/lck/gen-g-0b04cec0.json"
+    },
+    {
+      "team_id": "oe:team:ef69efa6acebe94107f0cf1ba716806",
+      "team_name": "Dplus Kia",
+      "league": "LCK",
+      "year": 2025,
+      "matches": 131,
+      "snapshot": "overviews/2025/lck/dplus-kia-8ec54343.json"
+    },
+    {
+      "team_id": "oe:team:3a1d18f46bcb3716ebcfcf4ef068934",
+      "team_name": "Hanwha Life Esports",
+      "league": "LCK",
+      "year": 2025,
+      "matches": 121,
+      "snapshot": "overviews/2025/lck/hanwha-life-esports-6f1d280e.json"
+    },
+    {
+      "team_id": "oe:team:5cd2cd09ec94296f605dd13a2924d6c",
+      "team_name": "Nongshim RedForce",
+      "league": "LCK",
+      "year": 2025,
+      "matches": 117,
+      "snapshot": "overviews/2025/lck/nongshim-redforce-4dfb057b.json"
+    },
+    {
+      "team_id": "oe:team:d723992568441c6bafa2658129eade7",
+      "team_name": "KT Rolster",
+      "league": "LCK",
+      "year": 2025,
+      "matches": 114,
+      "snapshot": "overviews/2025/lck/kt-rolster-1b224e45.json"
+    },
+    {
+      "team_id": "oe:team:fcec508e780bbd1ad493852640f5b36",
+      "team_name": "Top Esports",
+      "league": "LPL",
+      "year": 2025,
+      "matches": 152,
+      "snapshot": "overviews/2025/lpl/top-esports-bec0d1ae.json"
+    },
+    {
+      "team_id": "oe:team:d356a144644879dabb5f34cd99c886d",
+      "team_name": "Bilibili Gaming",
+      "league": "LPL",
+      "year": 2025,
+      "matches": 148,
+      "snapshot": "overviews/2025/lpl/bilibili-gaming-568f8788.json"
+    },
+    {
+      "team_id": "oe:team:ed28f87f0cfdba0a2a8f183cebae73a",
+      "team_name": "Anyone's Legend",
+      "league": "LPL",
+      "year": 2025,
+      "matches": 142,
+      "snapshot": "overviews/2025/lpl/anyone-s-legend-e02db190.json"
+    },
+    {
+      "team_id": "oe:team:b42d0f31f2727621b963042276817c4",
+      "team_name": "JD Gaming",
+      "league": "LPL",
+      "year": 2025,
+      "matches": 137,
+      "snapshot": "overviews/2025/lpl/jd-gaming-fdb5bfe5.json"
+    },
+    {
+      "team_id": "oe:team:606c6ac695907af3823ee6405c58ff1",
+      "team_name": "Weibo Gaming",
+      "league": "LPL",
+      "year": 2025,
+      "matches": 135,
+      "snapshot": "overviews/2025/lpl/weibo-gaming-3056f1b8.json"
+    },
+    {
+      "team_id": "oe:team:53a258f289c26d94431c0496a54e151",
+      "team_name": "Invictus Gaming",
+      "league": "LPL",
+      "year": 2025,
+      "matches": 132,
+      "snapshot": "overviews/2025/lpl/invictus-gaming-150520d4.json"
+    },
+    {
+      "team_id": "oe:team:f3aa9bbd924ce3af42ac53f8326bc7c",
+      "team_name": "Karmine Corp",
+      "league": "LEC",
+      "year": 2025,
+      "matches": 87,
+      "snapshot": "overviews/2025/lec/karmine-corp-1483e75d.json"
+    },
+    {
+      "team_id": "oe:team:4acc40654379b4da680be1bd3129dfa",
+      "team_name": "Movistar KOI",
+      "league": "LEC",
+      "year": 2025,
+      "matches": 85,
+      "snapshot": "overviews/2025/lec/movistar-koi-34376c8a.json"
+    },
+    {
+      "team_id": "oe:team:78f183fa5a7d8ecb22b9ad272c3abd7",
+      "team_name": "Fnatic",
+      "league": "LEC",
+      "year": 2025,
+      "matches": 80,
+      "snapshot": "overviews/2025/lec/fnatic-ddd958f8.json"
+    },
+    {
+      "team_id": "oe:team:7d6673d3a9d00363c6bebc1a630da6e",
+      "team_name": "G2 Esports",
+      "league": "LEC",
+      "year": 2025,
+      "matches": 73,
+      "snapshot": "overviews/2025/lec/g2-esports-b6b06b06.json"
+    },
+    {
+      "team_id": "oe:team:6cd05f0ac20bfb965a59dc8bcc4f184",
+      "team_name": "GiantX",
+      "league": "LEC",
+      "year": 2025,
+      "matches": 57,
+      "snapshot": "overviews/2025/lec/giantx-2083ed58.json"
+    },
+    {
+      "team_id": "oe:team:1285e1c04d54de96502f12da4d49458",
+      "team_name": "Team Heretics",
+      "league": "LEC",
+      "year": 2025,
+      "matches": 54,
+      "snapshot": "overviews/2025/lec/team-heretics-327cd5a2.json"
+    },
+    {
+      "team_id": "oe:team:fc8e90107dabb9a35c490b0d86adea0",
+      "team_name": "Cloud9",
+      "league": "LTA N",
+      "year": 2025,
+      "matches": 59,
+      "snapshot": "overviews/2025/lta-n/cloud9-17351875.json"
+    },
+    {
+      "team_id": "oe:team:b360f1d729b0a8e0f29a5243c4200fa",
+      "team_name": "Shopify Rebellion",
+      "league": "LTA N",
+      "year": 2025,
+      "matches": 58,
+      "snapshot": "overviews/2025/lta-n/shopify-rebellion-5205977d.json"
+    },
+    {
+      "team_id": "oe:team:2e66da41dc460dd378e3bcc57042d31",
+      "team_name": "FlyQuest",
+      "league": "LTA N",
+      "year": 2025,
+      "matches": 54,
+      "snapshot": "overviews/2025/lta-n/flyquest-a96ad1fa.json"
+    },
+    {
+      "team_id": "oe:team:4bd1751425ef6a9bc9d4d8e9385b4a6",
+      "team_name": "100 Thieves",
+      "league": "LTA N",
+      "year": 2025,
+      "matches": 51,
+      "snapshot": "overviews/2025/lta-n/100-thieves-3824ba6d.json"
+    },
+    {
+      "team_id": "oe:team:8eb884e168f28402ce685bedebb5250",
+      "team_name": "Team Liquid",
+      "league": "LTA N",
+      "year": 2025,
+      "matches": 47,
+      "snapshot": "overviews/2025/lta-n/team-liquid-c4e8eaf7.json"
+    },
+    {
+      "team_id": "oe:team:0dbb780176ecad18f17292d1f5653af",
+      "team_name": "Dignitas",
+      "league": "LTA N",
+      "year": 2025,
+      "matches": 39,
+      "snapshot": "overviews/2025/lta-n/dignitas-6305c6da.json"
+    },
+    {
+      "team_id": "oe:team:42bf6c1040db8f2221ff017fa4d34e4",
+      "team_name": "Karmine Corp Blue",
+      "league": "LFL",
+      "year": 2025,
+      "matches": 79,
+      "snapshot": "overviews/2025/lfl/karmine-corp-blue-394e88f2.json"
+    },
+    {
+      "team_id": "oe:team:c40f6d0d20a7a718c60342e48c144a2",
+      "team_name": "BK ROG Esports",
+      "league": "LFL",
+      "year": 2025,
+      "matches": 75,
+      "snapshot": "overviews/2025/lfl/bk-rog-esports-65b90172.json"
+    },
+    {
+      "team_id": "oe:team:d2c27cb51cedbbac1752f1ec81addc4",
+      "team_name": "Gentle Mates",
+      "league": "LFL",
+      "year": 2025,
+      "matches": 70,
+      "snapshot": "overviews/2025/lfl/gentle-mates-1b7ecdde.json"
+    },
+    {
+      "team_id": "oe:team:ccd089bf173a5fff1063eb0576201a7",
+      "team_name": "Vitality.Bee",
+      "league": "LFL",
+      "year": 2025,
+      "matches": 70,
+      "snapshot": "overviews/2025/lfl/vitality-bee-f7a54f5d.json"
+    },
+    {
+      "team_id": "oe:team:e0143514c5de64f62eb418004ca2751",
+      "team_name": "Galions",
+      "league": "LFL",
+      "year": 2025,
+      "matches": 69,
+      "snapshot": "overviews/2025/lfl/galions-be7aefba.json"
+    },
+    {
+      "team_id": "oe:team:90938c428db11f6e372f5c6833b9743",
+      "team_name": "Solary",
+      "league": "LFL",
+      "year": 2025,
+      "matches": 62,
+      "snapshot": "overviews/2025/lfl/solary-e78d2f77.json"
     }
-  ]
+  ],
+  "default_selection": {
+    "league": "LCK",
+    "year": 2025,
+    "team_id": "oe:team:ce499dea30cfce118f4fe85da0227e8",
+    "comparison_team_id": "oe:team:50f58982d91a36557ec8aec52ab014f"
+  }
 }

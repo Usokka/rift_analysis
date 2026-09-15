@@ -24,7 +24,7 @@ packages = ["apps/api/app"]
 
 [tool.pytest.ini_options]
 testpaths = ["apps/api/tests"]
-pythonpath = ["apps/api"]
+pythonpath = [".", "apps/api"]
 
 [tool.ruff]
 src = ["apps/api"]
