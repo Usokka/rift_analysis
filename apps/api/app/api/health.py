@@ -7,7 +7,7 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from sqlalchemy.exc import SQLAlchemyError
 
-from app.core.database import check_database
+from app.core.database import SchemaNotReadyError, check_database
 
 router = APIRouter(tags=["Health"])
 logger = logging.getLogger(__name__)
@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 class HealthResponse(BaseModel):
     status: Literal["ok", "ready", "unavailable"]
-    database: Literal["reachable", "unreachable"] | None = None
+    database: Literal["reachable", "unreachable", "schema_not_ready"] | None = None
 
 
 def get_database_probe() -> Callable[[], None]:
@@ -30,9 +30,14 @@ def health() -> HealthResponse:
 
 @router.get("/ready", response_model=HealthResponse, responses={503: {"model": HealthResponse}})
 def ready(probe: Annotated[Callable[[], None], Depends(get_database_probe)]):
-    """Readiness: PostgreSQL must answer a bounded connectivity check."""
+    """Readiness: PostgreSQL must respond with the required schemas and revision."""
     try:
         probe()
+    except SchemaNotReadyError:
+        logger.warning("Database schema readiness check failed")
+        return JSONResponse(
+            status_code=503, content={"status": "unavailable", "database": "schema_not_ready"}
+        )
     except (SQLAlchemyError, OSError):
         # Never return connection strings or exception details to the client.
         logger.warning("Database readiness check failed")

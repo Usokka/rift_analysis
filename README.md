@@ -18,7 +18,7 @@ docker compose up --build -d --wait
 - Interface : http://localhost:3000
 - API et documentation : http://localhost:8000/docs
 - Liveness : http://localhost:8000/api/v1/health
-- Readiness PostgreSQL : http://localhost:8000/api/v1/ready
+- Readiness PostgreSQL et migrations : http://localhost:8000/api/v1/ready
 
 Les migrations sont appliquées avant le démarrage de l’API ; les trois services permanents sont vérifiés au démarrage. PostgreSQL reste privé au réseau Compose. Les ports web/API sont liés à localhost. Les identifiants de `.env.example` servent uniquement au développement local ; utiliser un mot de passe compatible URL ou encoder ses caractères réservés dans `DATABASE_URL`.
 
@@ -61,6 +61,8 @@ Cette commande lance Ruff, les tests API, ESLint, TypeScript et le build fronten
 - Docker Compose, Makefile, dépendances verrouillées et GitHub Actions.
 
 ## Suite
+
+Voir [l’audit du dépôt](AUDIT.md), [le plan des versions](docs/ROADMAP.md) et [les contrats des KPIs cibles](docs/metrics.md). Les chiffres « 18 000+ matchs / 25+ KPIs » constituent une cible à mesurer, pas un résultat livré.
 
 1. Inspection Oracle’s Elixir, stockage raw et ingestion idempotente.
 2. Modèle métier, contrôles qualité et KPIs documentés.

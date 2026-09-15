@@ -3,6 +3,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy.exc import OperationalError
 
 from app.api.health import get_database_probe
+from app.core.database import SchemaNotReadyError
 from app.main import create_app
 
 
@@ -43,3 +44,14 @@ def test_cors_allows_configured_origin_only(client):
     assert allowed.headers["access-control-allow-origin"] == "http://localhost:3000"
     blocked = client.get("/api/v1/health", headers={"Origin": "https://untrusted.example"})
     assert "access-control-allow-origin" not in blocked.headers
+
+
+def test_unmigrated_database_is_not_ready(client):
+    def fail():
+        raise SchemaNotReadyError
+
+    client.app.dependency_overrides[get_database_probe] = lambda: fail
+    response = client.get("/api/v1/ready")
+    assert response.status_code == 503
+    assert response.json() == {"status": "unavailable", "database": "schema_not_ready"}
+    assert client.get("/api/v1/health").status_code == 200

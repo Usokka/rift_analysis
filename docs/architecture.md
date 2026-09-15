@@ -8,7 +8,7 @@ Les tickets 001–002 fournissent le monorepo, les services locaux, la CI et les
 - PostgreSQL : source de vérité prévue pour raw → staging → analytics.
 - Nginx relaie `/api/` vers FastAPI : le navigateur utilise une origine unique.
 
-`/api/v1/health` vérifie le processus ; `/api/v1/ready` exécute `SELECT 1` et renvoie 503 si PostgreSQL est indisponible. Aucun secret ni détail de connexion n'est renvoyé en cas d'échec.
+`/api/v1/health` vérifie le processus ; `/api/v1/ready` vérifie les trois schémas et la révision Alembic attendue ; une base vide ou obsolète renvoie 503. Les attentes de connexion, de pool et les requêtes SQL ont chacune un délai maximal configuré de 3 secondes (ce ne sont pas une deadline globale). Aucun secret ni détail de connexion n'est renvoyé en cas d'échec.
 
 Les schémas raw/staging/analytics sont créés par la révision Alembic 0001. Le service ponctuel `migrate` doit réussir avant le démarrage de l’API ; aucun `create_all` n’est exécuté. Les dossiers métier seront ajoutés avec leur implémentation, sans arborescence vide.
 
@@ -21,4 +21,6 @@ Les schémas raw/staging/analytics sont créés par la révision Alembic 0001. L
 5. Ne pas afficher de score d'objectifs ou d'early game avant une formule documentée et testée.
 6. L'image fournie est une référence artistique ; ses chiffres et son roster ne constituent pas des données.
 
-Le prochain incrément est la configuration Alembic et la première migration ; l'ingestion vient ensuite.
+Le prochain incrément est l’inspection du dataset puis l’ingestion raw idempotente (tickets 003–005). Voir [la roadmap](ROADMAP.md).
+
+Nginx utilise le DNS Docker pour réévaluer l’adresse de l’API après recréation du conteneur. Alembic ne gère que raw/staging/analytics ; les tables applicatives externes de public sont exclues de l’autogénération.

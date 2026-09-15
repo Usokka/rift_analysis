@@ -11,7 +11,7 @@ target_metadata = Base.metadata
 def include_name(name, type_, parent_names):
     # Autogeneration must not manage unrelated PostgreSQL schemas.
     if type_ == "schema":
-        return name in (None, "raw", "staging", "analytics")
+        return name in ("raw", "staging", "analytics")
     # PostgreSQL reflects public as the default schema (None).
     if type_ == "table" and name == "alembic_version":
         return parent_names.get("schema_name") not in (None, "public")
