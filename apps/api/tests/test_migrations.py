@@ -5,8 +5,11 @@ from pathlib import Path
 import pytest
 from alembic import command
 from alembic.config import Config
+from alembic.script import ScriptDirectory
 from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.exc import DBAPIError
+
+from app.core.database import REQUIRED_REVISION
 
 ROOT = Path(__file__).resolve().parents[3]
 SCHEMAS = {"raw", "staging", "analytics"}
@@ -14,6 +17,10 @@ SCHEMAS = {"raw", "staging", "analytics"}
 
 def migration_config():
     return Config(str(ROOT / "alembic.ini"))
+
+
+def test_readiness_revision_matches_migration_head():
+    assert ScriptDirectory.from_config(migration_config()).get_heads() == [REQUIRED_REVISION]
 
 
 def test_offline_sql_contains_schemas_without_credentials():
@@ -50,7 +57,10 @@ def test_migration_lifecycle_on_postgres():
                     ).scalar_one()
                     == "0001"
                 )
+                # Unrelated public tables must never become DROP TABLE candidates.
+                connection.execute(text("CREATE TABLE public.external_tool (id integer)"))
                 command.check(config)  # ORM metadata and database do not drift.
+                connection.execute(text("DROP TABLE public.external_tool"))
 
                 connection.execute(text("CREATE TABLE raw.rollback_guard (id integer)"))
                 connection.execute(text("INSERT INTO raw.rollback_guard VALUES (42)"))

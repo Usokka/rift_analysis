@@ -9,7 +9,7 @@ Alembic est l’unique mécanisme de création et d’évolution du schéma. Auc
 - `analytics` : modèle analytique et résultats destinés à l’API.
 - `public.alembic_version` : révision appliquée par Alembic.
 
-Aucune table métier n’est créée avant inspection du dataset. La base déclarative et les conventions de noms sont dans `app.core.models.Base`. Importer les futurs modèles dans l’environnement Alembic avant toute génération de migration.
+Aucune table métier n’est créée avant inspection du dataset. La base déclarative et les conventions de noms sont dans `app.core.models.Base`. La readiness exige la révision `REQUIRED_REVISION` de `app.core.database` ; la mettre à jour à chaque migration (un test vérifie sa cohérence avec la tête Alembic). Les tables de `public` autres que la table de version restent hors du périmètre d’autogénération. Importer les futurs modèles dans l’environnement Alembic avant toute génération de migration.
 
 ## Avec Docker Compose
 
