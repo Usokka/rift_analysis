@@ -12,7 +12,7 @@
 | API avec 28 KPIs, filtres et benchmark ligue | Implémenté |
 | Dashboard Overview/Team/Players/Draft/Trends | Implémenté |
 | Corpus mesuré | 20 871 matchs acceptés sur 20 901 `gameid` distincts |
-| Démo publique et étude d’équipe | À produire après validation et fusion |
+| Démo publique et étude d’équipe | Snapshot T1 / LCK 2025 et déploiement GitHub Pages automatisés |
 
 ## Ordre des versions
 
@@ -23,20 +23,19 @@
 | 0.3 — modèle et qualité | Matchs, équipes, joueurs, stats équipe/joueur et drafts | Implémenté ; 30 matchs invalides exclus et conservés en raw |
 | 0.4 — première verticale | 15 KPIs équipe, endpoint Overview, filtres et comparaison ligue | Implémenté |
 | 0.5 — couverture analytique | 28 contrats, joueurs par rôle, drafts, sides et tendances | Implémenté |
-| 1.0 — portfolio | Vues Team/Players/Draft/Trends, corpus reproductible et preuves chiffrées | Implémenté localement ; déploiement public et étude éditoriale à ajouter |
+| 1.0 — portfolio | Vues Team/Players/Draft/Trends, corpus reproductible et preuves chiffrées | Livré ; démo statique reproductible et étude T1 publiées |
 | 1.1 — confort analyste | Comparaison de deux équipes, export de rapport, détail d’un match | Cas d’usage validé sur données réelles et comparaison cohérente de filtres |
 | 2.0 — analyses approfondies | Analyse par patch, conversion d’avance, scouting ; Riot uniquement si l’accès aux matchs visés est vérifié | Provenance et couverture de chaque enrichissement ; aucune dépendance Riot obligatoire |
 | 3.0 — expérimentation | Similarité joueurs/équipes, clustering, éventuellement prédiction | Baselines, séparation temporelle entraînement/test, absence de fuite et limites documentées |
 
 Pas de LLM, Airflow, Redis ou infrastructure supplémentaire avant un besoin mesuré. Importer par lots pour rester compatible avec une machine à 4 Go de RAM. Les calculs de référence restent côté SQL/backend.
 
-## Prochain incrément : présentation portfolio
+## Prochain incrément : confort analyste
 
-
-1. Déployer gratuitement l’API, PostgreSQL et le frontend.
-2. Choisir une équipe et rédiger une étude courte fondée sur les KPIs réels.
-3. Capturer les cinq vues et enregistrer une démonstration courte.
-4. Ajouter l’URL et les visuels au README et aux messages de prospection esport.
+1. Comparer deux équipes avec le même périmètre de filtres.
+2. Exporter un rapport et ouvrir le détail d’un match.
+3. Ajouter une analyse par patch et mesurer la conversion d’un avantage à 15 minutes.
+4. Déployer le backend complet uniquement si un hébergement PostgreSQL pérenne est disponible ; la démo GitHub Pages reste un snapshot sans coût ni secret.
 
 ## Première verticale livrée : 0.4
 

@@ -1,0 +1,42 @@
+{
+  "data_status": {
+    "matches": 20871,
+    "raw_rows": 250812,
+    "source_files": 2,
+    "rejected_rows": 360,
+    "last_imported_at": null
+  },
+  "leagues": [
+    {
+      "league": "LCK",
+      "year": 2025,
+      "matches": 555
+    }
+  ],
+  "splits": [
+    {
+      "league": "LCK",
+      "year": 2025,
+      "split": "Cup"
+    },
+    {
+      "league": "LCK",
+      "year": 2025,
+      "split": "Rounds 1-2"
+    },
+    {
+      "league": "LCK",
+      "year": 2025,
+      "split": "Rounds 3-5"
+    }
+  ],
+  "teams": [
+    {
+      "team_id": "oe:team:ce499dea30cfce118f4fe85da0227e8",
+      "team_name": "T1",
+      "league": "LCK",
+      "year": 2025,
+      "matches": 115
+    }
+  ]
+}

@@ -49,6 +49,12 @@ type Overview = {
 type View = 'overview' | 'team' | 'players' | 'draft' | 'trends';
 type LoadState = 'loading' | 'ready' | 'empty' | 'error';
 
+const demoMode = import.meta.env.VITE_DEMO_MODE === 'true';
+
+function analyticsUrl(apiPath: string, demoFile: string) {
+  return demoMode ? `${import.meta.env.BASE_URL}demo/${demoFile}` : apiPath;
+}
+
 const views: { id: View; label: string }[] = [
   { id: 'overview', label: 'Vue d’ensemble' },
   { id: 'team', label: 'Équipe' },
@@ -140,7 +146,7 @@ export function App() {
   useEffect(() => {
     const controller = new AbortController();
     setState('loading');
-    fetch('/api/v1/analytics/metadata', { signal: controller.signal })
+    fetch(analyticsUrl('/api/v1/analytics/metadata', 'metadata.json'), { signal: controller.signal })
       .then(async (response) => {
         if (!response.ok) throw new Error('metadata unavailable');
         return (await response.json()) as Metadata;
@@ -188,7 +194,7 @@ export function App() {
     if (startDate) params.set('start_date', startDate);
     if (endDate) params.set('end_date', endDate);
     setState('loading');
-    fetch(`/api/v1/analytics/overview?${params}`, { signal: controller.signal })
+    fetch(analyticsUrl(`/api/v1/analytics/overview?${params}`, 'overview.json'), { signal: controller.signal })
       .then(async (response) => {
         if (response.status === 404) return null;
         if (!response.ok) throw new Error('overview unavailable');
@@ -225,13 +231,23 @@ export function App() {
           <div className="corpus-count"><strong>{metadata?.data_status.matches.toLocaleString('fr-FR') ?? '—'}</strong><span>matchs vérifiés</span></div>
         </header>
 
+        {demoMode ? (
+          <aside className="demo-banner">
+            <strong>Démo publique vérifiée</strong>
+            <span>Instantané T1 · LCK 2025 calculé sur le corpus complet. L’API et PostgreSQL restent disponibles via Docker.</span>
+            <a href="https://github.com/Usokka/rift_analysis">Voir le dépôt</a>
+          </aside>
+        ) : null}
+
         {metadata?.leagues.length ? (
-          <section className="filters" aria-label="Filtres d’analyse">
-            <label>Ligue et saison<select value={leagueKey} onChange={(event) => setLeagueKey(event.target.value)}>{metadata.leagues.map((item) => <option key={`${item.year}|${item.league}`} value={`${item.year}|${item.league}`}>{item.league} · {item.year} ({item.matches})</option>)}</select></label>
-            <label>Équipe<select value={teamId} onChange={(event) => setTeamId(event.target.value)}>{teams.map((team) => <option key={team.team_id} value={team.team_id}>{team.team_name} ({team.matches})</option>)}</select></label>
-            <label>Split<select value={split} onChange={(event) => setSplit(event.target.value)}><option value="">Tous</option>{splits.map((item) => <option key={item.split} value={item.split}>{item.split}</option>)}</select></label>
-            <label>Du<input type="date" value={startDate} max={endDate || undefined} onChange={(event) => setStartDate(event.target.value)} /></label>
-            <label>Au<input type="date" value={endDate} min={startDate || undefined} onChange={(event) => setEndDate(event.target.value)} /></label>
+          <section className={`filters${demoMode ? ' demo-filters' : ''}`} aria-label="Filtres d’analyse">
+            <label>Ligue et saison<select disabled={demoMode} value={leagueKey} onChange={(event) => setLeagueKey(event.target.value)}>{metadata.leagues.map((item) => <option key={`${item.year}|${item.league}`} value={`${item.year}|${item.league}`}>{item.league} · {item.year} ({item.matches})</option>)}</select></label>
+            <label>Équipe<select disabled={demoMode} value={teamId} onChange={(event) => setTeamId(event.target.value)}>{teams.map((team) => <option key={team.team_id} value={team.team_id}>{team.team_name} ({team.matches})</option>)}</select></label>
+            {!demoMode ? <>
+              <label>Split<select value={split} onChange={(event) => setSplit(event.target.value)}><option value="">Tous</option>{splits.map((item) => <option key={item.split} value={item.split}>{item.split}</option>)}</select></label>
+              <label>Du<input type="date" value={startDate} max={endDate || undefined} onChange={(event) => setStartDate(event.target.value)} /></label>
+              <label>Au<input type="date" value={endDate} min={startDate || undefined} onChange={(event) => setEndDate(event.target.value)} /></label>
+            </> : null}
           </section>
         ) : null}
 
@@ -257,7 +273,7 @@ export function App() {
             {view === 'trends' ? <section><div className="page-heading"><p className="eyebrow">Agrégation hebdomadaire</p><h2>Tendances</h2><p>Évolution de l’early game, des résultats et du rythme offensif.</p></div><div className="panel trend-large"><div className="section-heading"><h2>Différence d’or à 15 minutes</h2><span>{overview.trends.length} semaines</span></div><TrendChart points={overview.trends} /></div><div className="table-wrap"><table><thead><tr><th>Semaine</th><th>Matchs</th><th>Win rate</th><th>GD@15</th><th>Kills/match</th></tr></thead><tbody>{overview.trends.map((point) => <tr key={point.week}><th>{new Date(point.week).toLocaleDateString('fr-FR')}</th><td>{point.matches}</td><td>{point.win_rate === null ? '—' : `${point.win_rate.toFixed(1)} %`}</td><td>{point.gold_diff_at_15 === null ? '—' : Math.round(point.gold_diff_at_15).toLocaleString('fr-FR')}</td><td>{point.kills_per_game?.toFixed(1) ?? '—'}</td></tr>)}</tbody></table></div></section> : null}
           </>
         ) : null}
-        <footer><span>Source : Oracle’s Elixir</span><span>Same Rift. Smarter Decisions.</span></footer>
+        <footer><span>Source : Oracle’s Elixir{demoMode ? ' · instantané statique' : ''}</span><span>Same Rift. Smarter Decisions.</span></footer>
       </main>
     </div>
   );
