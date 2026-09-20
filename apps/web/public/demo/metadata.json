@@ -10,27 +10,32 @@
     {
       "league": "LCK",
       "year": 2025,
-      "matches": 555
+      "matches": 555,
+      "match_snapshot": "matches/2025/lck.json"
     },
     {
       "league": "LPL",
       "year": 2025,
-      "matches": 805
+      "matches": 805,
+      "match_snapshot": "matches/2025/lpl.json"
     },
     {
       "league": "LEC",
       "year": 2025,
-      "matches": 306
+      "matches": 306,
+      "match_snapshot": "matches/2025/lec.json"
     },
     {
       "league": "LTA N",
       "year": 2025,
-      "matches": 189
+      "matches": 189,
+      "match_snapshot": "matches/2025/lta-n.json"
     },
     {
       "league": "LFL",
       "year": 2025,
-      "matches": 306
+      "matches": 306,
+      "match_snapshot": "matches/2025/lfl.json"
     }
   ],
   "splits": [

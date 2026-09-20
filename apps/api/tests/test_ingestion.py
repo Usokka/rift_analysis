@@ -113,6 +113,18 @@ def test_idempotent_ingestion_and_analytics():
             )
             assert len(TEAM_METRICS) + len(PLAYER_METRICS) + len(DRAFT_METRICS) == 28
 
+            match_list = AnalyticsService(repository).matches(
+                AnalyticsFilters(league=team["league"], year=team["year"], team_id=team["team_id"])
+            )
+            assert match_list is not None
+            assert match_list.matches
+            detail = AnalyticsService(repository).match_detail(match_list.matches[0].game_id)
+            assert detail is not None
+            assert len(detail.teams) == 2
+            assert len(detail.players) == 10
+            assert detail.draft
+            assert all(item.reading for item in detail.teams)
+
             # This integration test shares its CI database with the migration lifecycle
             # test. Restore the genuinely empty state expected by that destructive test.
             command.downgrade(config, "base")

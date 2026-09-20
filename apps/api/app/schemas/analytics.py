@@ -18,6 +18,7 @@ class LeagueOption(BaseModel):
     league: str
     year: int
     matches: int
+    match_snapshot: str | None = None
 
 
 class SplitOption(BaseModel):
@@ -85,3 +86,94 @@ class OverviewResponse(BaseModel):
     players: list[PlayerSummary]
     draft: list[DraftChampionSummary]
     trends: list[TrendPoint]
+
+
+class MatchSummary(BaseModel):
+    game_id: str
+    played_at: datetime | None
+    split: str | None
+    game_number: int | None
+    patch: str | None
+    duration_seconds: int | None
+    team_id: str
+    team_name: str
+    opponent_id: str
+    opponent_name: str
+    side: str
+    result: int
+    kills: int | None
+    deaths: int | None
+    gold_diff_at_15: float | None
+
+
+class MatchTeam(BaseModel):
+    team_id: str
+    team_name: str
+    side: str
+    result: int
+    kills: int | None
+    deaths: int | None
+    assists: int | None
+    gold_diff_at_15: float | None
+    first_blood: bool | None
+    first_tower: bool | None
+    first_dragon: bool | None
+    first_herald: bool | None
+    first_baron: bool | None
+    dragons: int | None
+    heralds: int | None
+    barons: int | None
+    towers: int | None
+    reading: str
+
+
+class MatchPlayer(BaseModel):
+    participant_id: int
+    player_id: str
+    player_name: str
+    team_id: str
+    team_name: str
+    side: str
+    role: str
+    champion: str
+    result: int
+    kills: int | None
+    deaths: int | None
+    assists: int | None
+    total_cs: float | None
+    total_gold: float | None
+    damage_to_champions: float | None
+    vision_score: float | None
+    gold_diff_at_15: float | None
+
+
+class MatchDraftAction(BaseModel):
+    team_id: str
+    team_name: str
+    side: str
+    action_type: str
+    action_slot: int
+    champion: str
+    role: str | None
+
+
+class MatchDetail(BaseModel):
+    game_id: str
+    league: str
+    year: int
+    split: str | None
+    playoffs: bool | None
+    played_at: datetime | None
+    game_number: int | None
+    patch: str | None
+    duration_seconds: int | None
+    data_completeness: str | None
+    quality_status: str
+    teams: list[MatchTeam] = Field(min_length=2, max_length=2)
+    players: list[MatchPlayer] = Field(min_length=10, max_length=10)
+    draft: list[MatchDraftAction]
+
+
+class MatchListResponse(BaseModel):
+    filters: AppliedFilters
+    matches: list[MatchSummary]

@@ -306,3 +306,103 @@ class AnalyticsRepository:
             .mappings()
             .all()
         )
+
+    def matches(self, filters: AnalyticsFilters) -> list[dict]:
+        where, params = _where(filters, "t")
+        return list(
+            self.connection.execute(
+                text(
+                    f"""
+                    SELECT m.game_id, m.played_at, m.split, m.game_number, m.patch,
+                           m.duration_seconds,
+                           t.team_id, t.team_name, t.side, t.result, t.kills, t.deaths,
+                           t.gold_diff_at_15,
+                           opponent.team_id AS opponent_id,
+                           opponent.team_name AS opponent_name
+                    FROM analytics.team_match_stats t
+                    JOIN analytics.matches m ON m.game_id = t.game_id
+                    JOIN analytics.team_match_stats opponent
+                      ON opponent.game_id = t.game_id AND opponent.team_id <> t.team_id
+                    WHERE {where}
+                    ORDER BY m.played_at DESC NULLS LAST, m.game_id DESC
+                    """
+                ),
+                params,
+            )
+            .mappings()
+            .all()
+        )
+
+    def match(self, game_id: str) -> dict | None:
+        row = (
+            self.connection.execute(
+                text(
+                    """
+                    SELECT game_id, league, year, split, playoffs, played_at, game_number,
+                           patch, duration_seconds, data_completeness, quality_status
+                    FROM analytics.matches
+                    WHERE game_id = :game_id
+                      AND quality_status IN ('COMPLETE', 'PARTIAL')
+                    """
+                ),
+                {"game_id": game_id},
+            )
+            .mappings()
+            .one_or_none()
+        )
+        return dict(row) if row else None
+
+    def match_teams(self, game_id: str) -> list[dict]:
+        return list(
+            self.connection.execute(
+                text(
+                    """
+                    SELECT team_id, team_name, side, result, kills, deaths, assists,
+                           gold_diff_at_15, first_blood, first_tower, first_dragon,
+                           first_herald, first_baron, dragons, heralds, barons, towers
+                    FROM analytics.team_match_stats
+                    WHERE game_id = :game_id
+                    ORDER BY side
+                    """
+                ),
+                {"game_id": game_id},
+            )
+            .mappings()
+            .all()
+        )
+
+    def match_players(self, game_id: str) -> list[dict]:
+        return list(
+            self.connection.execute(
+                text(
+                    """
+                    SELECT participant_id, player_id, player_name, team_id, team_name,
+                           side, role, champion, result, kills, deaths, assists, total_cs,
+                           total_gold, damage_to_champions, vision_score, gold_diff_at_15
+                    FROM analytics.player_match_stats
+                    WHERE game_id = :game_id
+                    ORDER BY participant_id
+                    """
+                ),
+                {"game_id": game_id},
+            )
+            .mappings()
+            .all()
+        )
+
+    def match_draft(self, game_id: str) -> list[dict]:
+        return list(
+            self.connection.execute(
+                text(
+                    """
+                    SELECT team_id, team_name, side, action_type, action_slot, champion, role
+                    FROM analytics.draft_actions
+                    WHERE game_id = :game_id
+                    ORDER BY side, action_type, action_slot
+                    """
+                ),
+                {"game_id": game_id},
+            )
+            .mappings()
+            .all()
+        )

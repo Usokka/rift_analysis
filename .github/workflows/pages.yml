@@ -27,6 +27,17 @@ jobs:
           node-version: "22"
           cache: npm
           cache-dependency-path: apps/web/package-lock.json
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.11.33"
+          python-version: "3.12"
+      - run: uv sync --frozen
+      - name: Generate verified match catalogs
+        run: |
+          uv run python scripts/download_data.py --years 2023 2025 --output-dir data/raw
+          uv run python scripts/build_portfolio_demo.py \
+            data/raw/2023_LoL_esports_match_data_from_OraclesElixir.csv \
+            data/raw/2025_LoL_esports_match_data_from_OraclesElixir.csv
       - run: npm --prefix apps/web ci
       - name: Build verified static demo
         env:
