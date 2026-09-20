@@ -28,7 +28,7 @@ type Metadata = {
     rejected_rows: number;
     last_imported_at: string | null;
   };
-  leagues: { league: string; year: number; matches: number }[];
+  leagues: { league: string; year: number; matches: number; match_snapshot?: string | null }[];
   splits: { league: string; year: number; split: string }[];
   teams: TeamMetadata[];
   default_selection?: {
@@ -38,6 +38,94 @@ type Metadata = {
     comparison_team_id: string;
   };
 };
+
+type MatchTeam = {
+  team_id: string;
+  team_name: string;
+  side: 'BLUE' | 'RED';
+  result: number;
+  kills: number | null;
+  deaths: number | null;
+  assists: number | null;
+  gold_diff_at_15: number | null;
+  first_blood: boolean | null;
+  first_tower: boolean | null;
+  first_dragon: boolean | null;
+  first_herald: boolean | null;
+  first_baron: boolean | null;
+  dragons: number | null;
+  heralds: number | null;
+  barons: number | null;
+  towers: number | null;
+  reading: string;
+};
+
+type MatchPlayer = {
+  participant_id: number;
+  player_id: string;
+  player_name: string;
+  team_id: string;
+  team_name: string;
+  side: 'BLUE' | 'RED';
+  role: string;
+  champion: string;
+  result: number;
+  kills: number | null;
+  deaths: number | null;
+  assists: number | null;
+  total_cs: number | null;
+  total_gold: number | null;
+  damage_to_champions: number | null;
+  vision_score: number | null;
+  gold_diff_at_15: number | null;
+};
+
+type MatchDraftAction = {
+  team_id: string;
+  team_name: string;
+  side: 'BLUE' | 'RED';
+  action_type: 'PICK' | 'BAN';
+  action_slot: number;
+  champion: string;
+  role: string | null;
+};
+
+type MatchDetail = {
+  game_id: string;
+  league: string;
+  year: number;
+  split: string | null;
+  playoffs: boolean | null;
+  played_at: string | null;
+  game_number: number | null;
+  patch: string | null;
+  duration_seconds: number | null;
+  data_completeness: string | null;
+  quality_status: string;
+  teams: MatchTeam[];
+  players: MatchPlayer[];
+  draft: MatchDraftAction[];
+};
+
+type MatchSummary = {
+  game_id: string;
+  played_at: string | null;
+  split: string | null;
+  game_number: number | null;
+  patch: string | null;
+  duration_seconds: number | null;
+  team_id: string;
+  team_name: string;
+  opponent_id: string;
+  opponent_name: string;
+  side: 'BLUE' | 'RED';
+  result: number;
+  kills: number | null;
+  deaths: number | null;
+  gold_diff_at_15: number | null;
+};
+
+type MatchBundle = { league: string; year: number; matches: MatchDetail[] };
 
 type Player = { player_id: string; player_name: string; role: string; metrics: Metric[] };
 type DraftChampion = { champion: string; metrics: Metric[] };
@@ -61,7 +149,7 @@ type Overview = {
   draft: DraftChampion[];
   trends: Trend[];
 };
-type View = 'overview' | 'compare' | 'team' | 'players' | 'draft' | 'trends';
+type View = 'overview' | 'compare' | 'team' | 'players' | 'draft' | 'trends' | 'matches';
 type LoadState = 'loading' | 'ready' | 'empty' | 'error';
 
 type Insight = {
@@ -81,6 +169,7 @@ const views: { id: View; label: string }[] = [
   { id: 'players', label: 'Joueurs' },
   { id: 'draft', label: 'Draft' },
   { id: 'trends', label: 'Tendances' },
+  { id: 'matches', label: 'Matchs' },
 ];
 
 const insightSpecs = [
@@ -95,6 +184,49 @@ const insightSpecs = [
 
 function analyticsUrl(apiPath: string, demoFile: string) {
   return demoMode ? `${import.meta.env.BASE_URL}demo/${demoFile}` : apiPath;
+}
+
+function weekStart(value: string | null) {
+  if (!value) return '';
+  const date = new Date(value);
+  const day = (date.getUTCDay() + 6) % 7;
+  date.setUTCDate(date.getUTCDate() - day);
+  return date.toISOString().slice(0, 10);
+}
+
+function duration(value: number | null) {
+  if (value === null) return '—';
+  const minutes = Math.floor(value / 60);
+  return `${minutes}:${String(value % 60).padStart(2, '0')}`;
+}
+
+function number(value: number | null, signed = false) {
+  if (value === null) return '—';
+  const rounded = Math.round(value);
+  return `${signed && rounded > 0 ? '+' : ''}${rounded.toLocaleString('fr-FR')}`;
+}
+
+function summaryFromDetail(match: MatchDetail, teamId: string): MatchSummary | null {
+  const team = match.teams.find((item) => item.team_id === teamId);
+  const opponent = match.teams.find((item) => item.team_id !== teamId);
+  if (!team || !opponent) return null;
+  return {
+    game_id: match.game_id,
+    played_at: match.played_at,
+    split: match.split,
+    game_number: match.game_number,
+    patch: match.patch,
+    duration_seconds: match.duration_seconds,
+    team_id: team.team_id,
+    team_name: team.team_name,
+    opponent_id: opponent.team_id,
+    opponent_name: opponent.team_name,
+    side: team.side,
+    result: team.result,
+    kills: team.kills,
+    deaths: team.deaths,
+    gold_diff_at_15: team.gold_diff_at_15,
+  };
 }
 
 function metric(metrics: Metric[], id: string) {
@@ -302,6 +434,152 @@ function ComparisonView({ primary, comparison }: { primary: Overview; comparison
   );
 }
 
+function MatchExplorer({
+  matches,
+  detail,
+  selectedGameId,
+  selectedWeek,
+  teamId,
+  loading,
+  onSelect,
+  onClearWeek,
+}: {
+  matches: MatchSummary[];
+  detail: MatchDetail | null;
+  selectedGameId: string;
+  selectedWeek: string;
+  teamId: string;
+  loading: boolean;
+  onSelect: (gameId: string) => void;
+  onClearWeek: () => void;
+}) {
+  const visibleMatches = selectedWeek
+    ? matches.filter((item) => weekStart(item.played_at) === selectedWeek)
+    : matches;
+  const perspective = detail?.teams.find((item) => item.team_id === teamId);
+  return (
+    <section>
+      <div className="page-heading match-heading">
+        <div>
+          <p className="eyebrow">Observations traçables</p>
+          <h2>Exploration match par match</h2>
+          <p>Du résultat agrégé aux deux équipes, dix joueurs et actions de draft sources.</p>
+        </div>
+        {selectedWeek ? (
+          <button className="quiet-button" onClick={onClearWeek}>
+            Semaine du {new Date(selectedWeek).toLocaleDateString('fr-FR')} · Tout afficher
+          </button>
+        ) : null}
+      </div>
+      <div className="match-layout">
+        <aside className="match-list" aria-label="Liste des matchs">
+          <div className="section-heading">
+            <h2>Matchs</h2>
+            <span>{visibleMatches.length} observations</span>
+          </div>
+          <div className="match-list-scroll">
+            {visibleMatches.map((item) => (
+              <button
+                key={item.game_id}
+                className={selectedGameId === item.game_id ? 'selected' : ''}
+                onClick={() => onSelect(item.game_id)}
+              >
+                <span className={`result-mark ${item.result ? 'win' : 'loss'}`}>
+                  {item.result ? 'V' : 'D'}
+                </span>
+                <span>
+                  <strong>{item.team_name} — {item.opponent_name}</strong>
+                  <small>
+                    {item.played_at ? new Date(item.played_at).toLocaleDateString('fr-FR') : 'Date inconnue'}
+                    {' · '}{item.kills ?? '—'}–{item.deaths ?? '—'}
+                    {' · '}GD@15 {number(item.gold_diff_at_15, true)}
+                  </small>
+                </span>
+              </button>
+            ))}
+            {!visibleMatches.length ? <p className="chart-empty">Aucun match pour cette semaine.</p> : null}
+          </div>
+        </aside>
+
+        <div className="match-detail" aria-live="polite">
+          {loading ? <div className="notice" role="status">Chargement du match…</div> : null}
+          {!loading && detail ? (
+            <>
+              <header className="match-context">
+                <div>
+                  <p className="eyebrow">{detail.league} {detail.year}{detail.split ? ` · ${detail.split}` : ''}</p>
+                  <h2>{detail.teams[0].team_name} face à {detail.teams[1].team_name}</h2>
+                </div>
+                <dl>
+                  <div><dt>Date</dt><dd>{detail.played_at ? new Date(detail.played_at).toLocaleDateString('fr-FR') : '—'}</dd></div>
+                  <div><dt>Patch</dt><dd>{detail.patch ?? '—'}</dd></div>
+                  <div><dt>Durée</dt><dd>{duration(detail.duration_seconds)}</dd></div>
+                </dl>
+              </header>
+
+              <div className="scoreboard">
+                {detail.teams.map((team) => (
+                  <article key={team.team_id} className={team.team_id === teamId ? 'focus-team' : ''}>
+                    <p className="eyebrow">{team.side === 'BLUE' ? 'Côté bleu' : 'Côté rouge'}</p>
+                    <h3>{team.team_name}</h3>
+                    <strong>{team.kills ?? '—'} <span>kills</span></strong>
+                    <p className={team.result ? 'win-text' : 'loss-text'}>{team.result ? 'Victoire' : 'Défaite'}</p>
+                    <dl>
+                      <div><dt>GD@15</dt><dd>{number(team.gold_diff_at_15, true)}</dd></div>
+                      <div><dt>Tours</dt><dd>{team.towers ?? '—'}</dd></div>
+                      <div><dt>Dragons</dt><dd>{team.dragons ?? '—'}</dd></div>
+                      <div><dt>Barons</dt><dd>{team.barons ?? '—'}</dd></div>
+                    </dl>
+                  </article>
+                ))}
+              </div>
+
+              {perspective ? (
+                <div className="match-reading">
+                  <p className="eyebrow">Lecture descriptive · {perspective.team_name}</p>
+                  <p>{perspective.reading}</p>
+                </div>
+              ) : null}
+
+              <div className="table-wrap player-match-table">
+                <table>
+                  <thead><tr><th>Équipe</th><th>Rôle</th><th>Joueur</th><th>Champion</th><th>K / D / A</th><th>CS</th><th>Or</th><th>Dégâts</th><th>Vision</th><th>GD@15</th></tr></thead>
+                  <tbody>{detail.players.map((player) => (
+                    <tr key={player.participant_id}>
+                      <td>{player.team_name}</td><td><span className="role">{player.role}</span></td>
+                      <th>{player.player_name}</th><td>{player.champion}</td>
+                      <td>{player.kills ?? '—'} / {player.deaths ?? '—'} / {player.assists ?? '—'}</td>
+                      <td>{number(player.total_cs)}</td><td>{number(player.total_gold)}</td>
+                      <td>{number(player.damage_to_champions)}</td><td>{number(player.vision_score)}</td>
+                      <td>{number(player.gold_diff_at_15, true)}</td>
+                    </tr>
+                  ))}</tbody>
+                </table>
+              </div>
+
+              <div className="draft-detail panel">
+                <div className="section-heading"><h2>Draft normalisée</h2><span>Picks et bans par côté</span></div>
+                <div className="draft-sides">
+                  {detail.teams.map((team) => {
+                    const actions = detail.draft.filter((item) => item.team_id === team.team_id);
+                    return (
+                      <article key={team.team_id}>
+                        <h3>{team.team_name}</h3>
+                        <p><span>Picks</span>{actions.filter((item) => item.action_type === 'PICK').map((item) => item.champion).join(' · ') || '—'}</p>
+                        <p><span>Bans</span>{actions.filter((item) => item.action_type === 'BAN').map((item) => item.champion).join(' · ') || '—'}</p>
+                      </article>
+                    );
+                  })}
+                </div>
+              </div>
+            </>
+          ) : null}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function csvCell(value: string | number) {
   const text = String(value);
   return `"${text.replaceAll('"', '""')}"`;
@@ -329,16 +607,11 @@ function exportReport(primary: Overview, comparison: Overview | null) {
     }
   }
   const csv = `\ufeff${rows.map((row) => row.map(csvCell).join(';')).join('\n')}\n`;
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
   const names = selected.map((item) => item.filters.team_name).join('-vs-');
-  link.href = url;
-  link.download = `rift-analyst-${names.toLowerCase().replaceAll(/[^a-z0-9]+/g, '-')}.csv`;
-  document.body.append(link);
-  link.click();
-  link.remove();
-  window.setTimeout(() => URL.revokeObjectURL(url), 1_000);
+  return {
+    href: `data:text/csv;charset=utf-8,${encodeURIComponent(csv)}`,
+    filename: `rift-analyst-${names.toLowerCase().replaceAll(/[^a-z0-9]+/g, '-')}.csv`,
+  };
 }
 
 export function App() {
@@ -354,10 +627,15 @@ export function App() {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [attempt, setAttempt] = useState(0);
+  const [matchSummaries, setMatchSummaries] = useState<MatchSummary[]>([]);
+  const [demoMatchDetails, setDemoMatchDetails] = useState<MatchDetail[]>([]);
+  const [selectedGameId, setSelectedGameId] = useState('');
+  const [selectedMatch, setSelectedMatch] = useState<MatchDetail | null>(null);
+  const [selectedWeek, setSelectedWeek] = useState('');
+  const [matchesLoading, setMatchesLoading] = useState(false);
 
   useEffect(() => {
     const controller = new AbortController();
-    setState('loading');
     fetch(analyticsUrl('/api/v1/analytics/metadata', 'metadata.json'), { signal: controller.signal })
       .then(async (response) => {
         if (!response.ok) throw new Error('metadata unavailable');
@@ -451,12 +729,101 @@ export function App() {
     return () => controller.abort();
   }, [league, year, teamId, comparisonTeamId, split, startDate, endDate, teams, attempt]);
 
+  useEffect(() => {
+    if (!league || !year || !teamId || !metadata) return;
+    const controller = new AbortController();
+    const params = new URLSearchParams({ league, year: String(year), team_id: teamId });
+    if (split) params.set('split', split);
+    if (startDate) params.set('start_date', startDate);
+    if (endDate) params.set('end_date', endDate);
+    const leagueMetadata = metadata.leagues.find(
+      (item) => item.league === league && item.year === year,
+    );
+    const url = demoMode
+      ? analyticsUrl('', leagueMetadata?.match_snapshot ?? `matches/${year}/${league}.json`)
+      : `/api/v1/analytics/matches?${params}`;
+    setMatchesLoading(true);
+    setSelectedWeek('');
+    fetch(url, { signal: controller.signal })
+      .then(async (response) => {
+        if (!response.ok) throw new Error('matches unavailable');
+        if (demoMode) {
+          const bundle = (await response.json()) as MatchBundle;
+          const details = bundle.matches.filter((match) =>
+            match.teams.some((team) => team.team_id === teamId),
+          );
+          return {
+            summaries: details
+              .map((match) => summaryFromDetail(match, teamId))
+              .filter((item): item is MatchSummary => item !== null),
+            details,
+          };
+        }
+        const body = (await response.json()) as { matches: MatchSummary[] };
+        return { summaries: body.matches, details: [] as MatchDetail[] };
+      })
+      .then(({ summaries, details }) => {
+        setMatchSummaries(summaries);
+        setDemoMatchDetails(details);
+        const initial = summaries[0]?.game_id ?? '';
+        setSelectedGameId(initial);
+        setSelectedMatch(demoMode ? details.find((item) => item.game_id === initial) ?? null : null);
+        setMatchesLoading(false);
+      })
+      .catch((error: unknown) => {
+        if (!(error instanceof DOMException && error.name === 'AbortError')) {
+          setMatchSummaries([]);
+          setDemoMatchDetails([]);
+          setSelectedMatch(null);
+          setMatchesLoading(false);
+        }
+      });
+    return () => controller.abort();
+  }, [league, year, teamId, split, startDate, endDate, metadata, attempt]);
+
+  useEffect(() => {
+    if (!selectedGameId) {
+      setSelectedMatch(null);
+      return;
+    }
+    if (demoMode) {
+      setSelectedMatch(
+        demoMatchDetails.find((item) => item.game_id === selectedGameId) ?? null,
+      );
+      return;
+    }
+    const controller = new AbortController();
+    setMatchesLoading(true);
+    fetch(`/api/v1/analytics/match?${new URLSearchParams({ game_id: selectedGameId })}`, {
+      signal: controller.signal,
+    })
+      .then(async (response) => {
+        if (!response.ok) throw new Error('match unavailable');
+        return (await response.json()) as MatchDetail;
+      })
+      .then((body) => {
+        setSelectedMatch(body);
+        setMatchesLoading(false);
+      })
+      .catch((error: unknown) => {
+        if (!(error instanceof DOMException && error.name === 'AbortError')) {
+          setSelectedMatch(null);
+          setMatchesLoading(false);
+        }
+      });
+    return () => controller.abort();
+  }, [selectedGameId, demoMatchDetails]);
+
   const keyMetrics = overview
     ? ['T01', 'T05', 'T08'].map((id) => metric(overview.team_metrics, id))
     : [];
   const title = view === 'compare' && comparison
     ? `${overview?.filters.team_name ?? ''} vs ${comparison.filters.team_name}`
     : overview?.filters.team_name ?? 'Performance Review';
+  const report = useMemo(
+    () => (overview ? exportReport(overview, comparison) : null),
+    [overview, comparison],
+  );
 
   return (
     <div className="workspace">
@@ -475,7 +842,7 @@ export function App() {
         <header className="topbar">
           <div><p className="eyebrow">LEAGUE OF LEGENDS · ESPORTS</p><h1>{title}</h1></div>
           <div className="top-actions">
-            <button className="export-button" disabled={!overview} onClick={() => overview && exportReport(overview, comparison)}>Exporter CSV</button>
+            {report ? <a className="export-button" href={report.href} download={report.filename}>Exporter CSV</a> : null}
             <div className="corpus-count"><strong>{metadata?.data_status.matches.toLocaleString('fr-FR') ?? '—'}</strong><span>matchs vérifiés</span></div>
           </div>
         </header>
@@ -522,7 +889,9 @@ export function App() {
 
             {view === 'draft' ? <section><div className="page-heading"><p className="eyebrow">4 indicateurs par champion</p><h2>Lecture de draft</h2><p>Les picks et bans sont dédupliqués par match, équipe et emplacement.</p></div><div className="table-wrap"><table><thead><tr><th>Champion</th><th>Pick rate</th><th>Ban rate</th><th>Présence</th><th>Win rate en pick</th><th>Échantillon</th></tr></thead><tbody>{overview.draft.map((item) => <tr key={item.champion}><th>{item.champion}</th>{['D01','D02','D03','D04'].map((id) => <td key={id}>{formatValue(metric(item.metrics, id), true)}</td>)}<td>{metric(item.metrics, 'D04')?.sample_size ?? 0} picks</td></tr>)}</tbody></table></div></section> : null}
 
-            {view === 'trends' ? <section><div className="page-heading"><p className="eyebrow">Agrégation hebdomadaire</p><h2>Tendances</h2><p>Évolution de l’early game, des résultats et du rythme offensif.</p></div><div className="panel trend-large"><div className="section-heading"><h2>Différence d’or à 15 minutes</h2><span>{overview.trends.length} semaines</span></div><TrendChart points={overview.trends} /></div><div className="table-wrap"><table><thead><tr><th>Semaine</th><th>Matchs</th><th>Win rate</th><th>GD@15</th><th>Kills/match</th></tr></thead><tbody>{overview.trends.map((point) => <tr key={point.week}><th>{new Date(point.week).toLocaleDateString('fr-FR')}</th><td>{point.matches}</td><td>{point.win_rate === null ? '—' : `${point.win_rate.toFixed(1)} %`}</td><td>{point.gold_diff_at_15 === null ? '—' : Math.round(point.gold_diff_at_15).toLocaleString('fr-FR')}</td><td>{point.kills_per_game?.toFixed(1) ?? '—'}</td></tr>)}</tbody></table></div></section> : null}
+            {view === 'trends' ? <section><div className="page-heading"><p className="eyebrow">Agrégation hebdomadaire</p><h2>Tendances</h2><p>Évolution de l’early game, des résultats et du rythme offensif.</p></div><div className="panel trend-large"><div className="section-heading"><h2>Différence d’or à 15 minutes</h2><span>{overview.trends.length} semaines</span></div><TrendChart points={overview.trends} /></div><div className="table-wrap"><table><thead><tr><th>Semaine</th><th>Matchs</th><th>Win rate</th><th>GD@15</th><th>Kills/match</th><th>Détail</th></tr></thead><tbody>{overview.trends.map((point) => <tr key={point.week}><th>{new Date(point.week).toLocaleDateString('fr-FR')}</th><td>{point.matches}</td><td>{point.win_rate === null ? '—' : `${point.win_rate.toFixed(1)} %`}</td><td>{point.gold_diff_at_15 === null ? '—' : Math.round(point.gold_diff_at_15).toLocaleString('fr-FR')}</td><td>{point.kills_per_game?.toFixed(1) ?? '—'}</td><td><button className="table-action" onClick={() => { const first = matchSummaries.find((item) => weekStart(item.played_at) === point.week); setSelectedWeek(point.week); if (first) setSelectedGameId(first.game_id); setView('matches'); }}>Voir les matchs</button></td></tr>)}</tbody></table></div></section> : null}
+
+            {view === 'matches' ? <MatchExplorer matches={matchSummaries} detail={selectedMatch} selectedGameId={selectedGameId} selectedWeek={selectedWeek} teamId={teamId} loading={matchesLoading} onSelect={setSelectedGameId} onClearWeek={() => setSelectedWeek('')} /> : null}
           </>
         ) : null}
         <footer><span>Source : Oracle’s Elixir{demoMode ? ' · instantanés statiques' : ''}</span><span>Same Rift. Smarter Decisions.</span></footer>

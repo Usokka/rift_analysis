@@ -1,6 +1,6 @@
 # Rift Analyst
 
-Plateforme d’analyse de performances esport League of Legends construite avec un pipeline reproductible, PostgreSQL, FastAPI et React. Elle transforme les exports Oracle’s Elixir en 28 KPIs équipe, joueur et draft, puis compare deux équipes dans le même contexte de ligue et de saison.
+Plateforme d’analyse de performances esport League of Legends construite avec un pipeline reproductible, PostgreSQL, FastAPI et React. Elle transforme les exports Oracle’s Elixir en 28 KPIs équipe, joueur et draft, compare deux équipes dans le même contexte et permet de remonter jusqu’au détail de chaque match.
 
 **[Ouvrir la démo publique](https://usokka.github.io/rift_analysis/)** · 5 ligues, 30 équipes et comparaison A/B à partir d’instantanés 2025 calculés sur le corpus vérifié. Les études [T1 / LCK](docs/case-study-t1-2025.md) et [Karmine Corp / LEC](docs/case-study-karmine-corp-2025.md) documentent les observations, les échantillons et les limites.
 
@@ -43,7 +43,9 @@ Une partie Oracle’s Elixir contient normalement 12 lignes (10 joueurs et 2 éq
 - Catalogue public de 30 équipes réparties sur LCK, LPL, LEC, LTA North et LFL.
 - Comparaison de deux équipes sur un périmètre identique, avec lecture automatique de signaux descriptifs.
 - Export CSV des 15 KPIs équipe, benchmarks, unités et tailles d’échantillon.
-- Vues Overview, Compare, Team, Players, Draft et Trends, sans valeur analytique codée en dur dans React.
+- Exploration match par match : score, durée, patch, objectifs, dix joueurs et draft normalisée.
+- Navigation depuis une tendance hebdomadaire jusqu’aux observations qui composent l’agrégat.
+- Vues Overview, Compare, Team, Players, Draft, Trends et Matches, sans valeur analytique codée en dur dans React.
 
 ## Démarrage
 
@@ -89,9 +91,11 @@ make web
 ```text
 GET /api/v1/analytics/metadata
 GET /api/v1/analytics/overview?league=LCK&year=2025&team_id=...
+GET /api/v1/analytics/matches?league=LCK&year=2025&team_id=...
+GET /api/v1/analytics/match?game_id=...
 ```
 
-L’endpoint Overview renvoie les filtres appliqués, 15 KPIs équipe avec benchmark, 9 KPIs par profil joueur/rôle, 4 KPIs par champion draft et les tendances hebdomadaires.
+L’endpoint Overview renvoie les filtres appliqués, 15 KPIs équipe avec benchmark, 9 KPIs par profil joueur, 4 KPIs par champion draft et les tendances hebdomadaires. Les deux endpoints Matches exposent la liste filtrée puis les observations sources d’une partie : deux équipes, dix joueurs et actions de draft.
 
 ## Architecture
 
@@ -102,7 +106,7 @@ raw.source_files / raw.oracle_elixir_rows / raw.pipeline_runs
         ↓ validation et projection idempotente
 analytics.matches / team_match_stats / player_match_stats / draft_actions
         ↓ SQL analytique + FastAPI
-React : Overview / Team / Players / Draft / Trends
+React : Overview / Compare / Team / Players / Draft / Trends / Matches
 ```
 
 PostgreSQL est la source analytique de vérité. Alembic est l’unique mécanisme de création et d’évolution du schéma. Nginx relaie l’API sous la même origine que le frontend.
@@ -121,7 +125,7 @@ make check
 
 Cette commande exécute Ruff, pytest, ESLint, TypeScript et le build frontend. La CI ajoute PostgreSQL réel, le cycle Alembic, l’ingestion idempotente, Docker Compose et le test de reprise du proxy après recréation de l’API. La PR de livraison exécute aussi un contrôle complet sur les deux exports et publie la preuve comme artefact.
 
-`make portfolio-demo` régénère les 30 instantanés publics et les deux études d’équipe à partir des exports épinglés. La CI full-data refuse toute divergence entre les fichiers publiés et ce calcul reproductible.
+`make portfolio-demo` régénère les 30 instantanés publics, les cinq catalogues de matchs et les deux études d’équipe à partir des exports épinglés. La CI full-data refuse toute divergence des instantanés versionnés ; GitHub Pages régénère les catalogues volumineux avec le même pipeline juste avant chaque déploiement.
 
 - [Contrats des métriques](docs/metrics.md)
 - [Architecture](docs/architecture.md)

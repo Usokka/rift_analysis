@@ -12,7 +12,7 @@ analytics.matches
    ├── analytics.player_match_stats
    └── analytics.draft_actions
         ↓ AnalyticsRepository → AnalyticsService → FastAPI
-React : Overview / Team / Players / Draft / Trends
+React : Overview / Compare / Team / Players / Draft / Trends / Matches
 ```
 
 ## Ingestion et idempotence
@@ -27,9 +27,11 @@ Les actions PICK viennent des dix lignes joueurs ; leur `action_slot` représent
 
 ## API analytique
 
-`GET /api/v1/analytics/metadata` fournit le corpus, les ligues, saisons, splits et équipes. `GET /api/v1/analytics/overview` applique les filtres, agrège 15 KPIs équipe, 9 KPIs par joueur/rôle, 4 KPIs draft par champion et des tendances hebdomadaires.
+`GET /api/v1/analytics/metadata` fournit le corpus, les ligues, saisons, splits et équipes. `GET /api/v1/analytics/overview` applique les filtres, agrège 15 KPIs équipe, 9 KPIs par joueur/rôle, 4 KPIs draft par champion et des tendances hebdomadaires. `GET /api/v1/analytics/matches` liste les parties du périmètre et `GET /api/v1/analytics/match` restitue les deux équipes, dix joueurs et actions de draft d’un `gameid` accepté.
 
 Les benchmarks équipe conservent ligue, saison, split et période, puis retirent seulement le filtre équipe. Les pourcentages renvoient des points de pourcentage comme delta. Chaque métrique expose valeur, unité, effectif valide et effectif éligible.
+
+La version GitHub Pages reste statique : le même pipeline génère un catalogue par ligue pour les équipes publiées juste avant le déploiement, sans versionner ces fichiers volumineux. React filtre ces observations sans recalculer les KPIs de référence. La version locale utilise les endpoints PostgreSQL équivalents.
 
 ## Exécution
 

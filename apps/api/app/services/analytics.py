@@ -4,6 +4,12 @@ from app.repositories.analytics import AnalyticsFilters, AnalyticsRepository
 from app.schemas.analytics import (
     AppliedFilters,
     DraftChampionSummary,
+    MatchDetail,
+    MatchDraftAction,
+    MatchListResponse,
+    MatchPlayer,
+    MatchSummary,
+    MatchTeam,
     MetadataResponse,
     Metric,
     OverviewResponse,
@@ -74,6 +80,31 @@ def _metric(
     )
 
 
+def team_match_reading(team: Mapping, opponent: Mapping) -> str:
+    result = "Victoire" if int(team["result"]) == 1 else "Défaite"
+    observations = []
+    gold = team.get("gold_diff_at_15")
+    if gold is not None:
+        position = "avantage" if float(gold) >= 0 else "retard"
+        gold_reading = f"{position} de {abs(round(float(gold))):,} or à 15 min"
+        observations.append(gold_reading.replace(",", " "))
+    if team.get("kills") is not None and opponent.get("kills") is not None:
+        observations.append(f"{team['kills']}–{opponent['kills']} aux kills")
+    firsts = [
+        label
+        for key, label in (
+            ("first_blood", "premier sang"),
+            ("first_tower", "première tour"),
+            ("first_dragon", "premier dragon"),
+            ("first_baron", "premier Baron"),
+        )
+        if team.get(key) is True
+    ]
+    if firsts:
+        observations.append("priorité " + ", ".join(firsts[:3]))
+    return result + (" · " + " · ".join(observations) if observations else "")
+
+
 class AnalyticsService:
     def __init__(self, repository: AnalyticsRepository):
         self.repository = repository
@@ -132,4 +163,47 @@ class AnalyticsService:
             players=players,
             draft=draft,
             trends=[TrendPoint.model_validate(row) for row in self.repository.trends(filters)],
+        )
+
+    def matches(self, filters: AnalyticsFilters) -> MatchListResponse | None:
+        team_name = self.repository.team_name(filters)
+        if team_name is None:
+            return None
+        return MatchListResponse(
+            filters=AppliedFilters(
+                league=filters.league,
+                year=filters.year,
+                team_id=filters.team_id,
+                team_name=team_name,
+                split=filters.split,
+                start_date=filters.start_date,
+                end_date=filters.end_date,
+            ),
+            matches=[MatchSummary.model_validate(row) for row in self.repository.matches(filters)],
+        )
+
+    def match_detail(self, game_id: str) -> MatchDetail | None:
+        match = self.repository.match(game_id)
+        if match is None:
+            return None
+        teams = self.repository.match_teams(game_id)
+        if len(teams) != 2:
+            return None
+        enriched_teams = [
+            MatchTeam.model_validate(
+                {**team, "reading": team_match_reading(team, teams[1 - index])}
+            )
+            for index, team in enumerate(teams)
+        ]
+        players = [
+            MatchPlayer.model_validate(row) for row in self.repository.match_players(game_id)
+        ]
+        draft = [
+            MatchDraftAction.model_validate(row) for row in self.repository.match_draft(game_id)
+        ]
+        return MatchDetail(
+            **match,
+            teams=enriched_teams,
+            players=players,
+            draft=draft,
         )

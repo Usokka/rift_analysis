@@ -11,12 +11,18 @@ from pathlib import Path
 from statistics import fmean
 
 from app.ingestion.oracle_elixir import (
+    GameRecords,
     InvalidSourceError,
     file_sha256,
     iter_grouped_games,
     transform_game,
 )
-from app.services.analytics import DRAFT_METRICS, PLAYER_METRICS, TEAM_METRICS
+from app.services.analytics import (
+    DRAFT_METRICS,
+    PLAYER_METRICS,
+    TEAM_METRICS,
+    team_match_reading,
+)
 
 DEFAULT_SELECTIONS = (
     ("LCK", 2025),
@@ -396,6 +402,38 @@ def _snapshot_path(league: str, year: int, team_name: str, team_id: str) -> str:
     return f"overviews/{year}/{_slug(league)}/{_slug(team_name)}-{suffix}.json"
 
 
+def _match_snapshot_path(league: str, year: int) -> str:
+    return f"matches/{year}/{_slug(league)}.json"
+
+
+def _match_detail(records: GameRecords) -> dict:
+    teams = sorted(records.teams, key=lambda item: item["side"])
+    enriched_teams = [
+        {
+            **{key: value for key, value in team.items() if key != "game_id"},
+            "reading": team_match_reading(team, teams[1 - index]),
+        }
+        for index, team in enumerate(teams)
+    ]
+    match = records.match
+    return {
+        **match,
+        "played_at": match["played_at"].isoformat() if match["played_at"] else None,
+        "teams": enriched_teams,
+        "players": [
+            {key: value for key, value in player.items() if key not in {"game_id", "team_kills"}}
+            for player in sorted(records.players, key=lambda item: item["participant_id"])
+        ],
+        "draft": sorted(
+            (
+                {key: value for key, value in action.items() if key != "game_id"}
+                for action in records.draft
+            ),
+            key=lambda item: (item["side"], item["action_type"], item["action_slot"]),
+        ),
+    }
+
+
 def _overview(
     *,
     league: str,
@@ -433,7 +471,7 @@ def build_catalog(
     teams_per_league: int = 6,
     min_team_matches: int = 30,
     preferred_team_names: tuple[str, ...] = ("T1", "Gen.G", "Karmine Corp"),
-) -> tuple[dict, dict[str, dict]]:
+) -> tuple[dict, dict[str, dict], dict[str, dict]]:
     all_matches: set[str] = set()
     raw_rows = 0
     rejected_rows = 0
@@ -452,6 +490,7 @@ def build_catalog(
         lambda: defaultdict(lambda: defaultdict(int))
     )
     splits: dict[tuple[str, int], set[str]] = defaultdict(set)
+    league_games: dict[tuple[str, int], dict[str, GameRecords]] = defaultdict(dict)
 
     for source in sources:
         for game_id, rows in iter_grouped_games(source):
@@ -466,6 +505,7 @@ def build_catalog(
             if key not in selection_set:
                 continue
             matches[game_id] = records.match
+            league_games[key][game_id] = records
             league_matches[key].add(game_id)
             if records.match["split"]:
                 splits[key].add(records.match["split"])
@@ -554,6 +594,36 @@ def build_catalog(
             and team["team_id"] != primary["team_id"]
         ),
     )
+    published_teams: dict[tuple[str, int], set[str]] = defaultdict(set)
+    for team in metadata_teams:
+        published_teams[(team["league"], team["year"])].add(team["team_id"])
+    match_bundles = {
+        _match_snapshot_path(league, year): {
+            "league": league,
+            "year": year,
+            "matches": [
+                _match_detail(records)
+                for records in sorted(
+                    (
+                        records
+                        for records in league_games[(league, year)].values()
+                        if any(
+                            team["team_id"] in published_teams[(league, year)]
+                            for team in records.teams
+                        )
+                    ),
+                    key=lambda item: (
+                        item.match["played_at"] is not None,
+                        item.match["played_at"],
+                        item.match["game_id"],
+                    ),
+                    reverse=True,
+                )
+            ],
+        }
+        for league, year in selections
+        if league_games[(league, year)]
+    }
     metadata = {
         "data_status": {
             "matches": len(all_matches),
@@ -563,7 +633,12 @@ def build_catalog(
             "last_imported_at": None,
         },
         "leagues": [
-            {"league": league, "year": year, "matches": len(league_matches[(league, year)])}
+            {
+                "league": league,
+                "year": year,
+                "matches": len(league_matches[(league, year)]),
+                "match_snapshot": _match_snapshot_path(league, year),
+            }
             for league, year in selections
             if league_matches[(league, year)]
         ],
@@ -580,7 +655,7 @@ def build_catalog(
             "comparison_team_id": comparison["team_id"],
         },
     }
-    return metadata, overviews
+    return metadata, overviews, match_bundles
 
 
 def _parse_selection(value: str) -> tuple[str, int]:
@@ -614,7 +689,7 @@ def main() -> None:
         args.comparison_team,
         args.secondary_case_study_team,
     )
-    metadata, overviews = build_catalog(
+    metadata, overviews, match_bundles = build_catalog(
         args.sources,
         selections=selections,
         teams_per_league=args.teams_per_league,
@@ -626,6 +701,9 @@ def main() -> None:
     overview_dir = args.demo_dir / "overviews"
     if overview_dir.exists():
         shutil.rmtree(overview_dir)
+    match_dir = args.demo_dir / "matches"
+    if match_dir.exists():
+        shutil.rmtree(match_dir)
     (args.demo_dir / "metadata.json").write_text(
         json.dumps(metadata, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
     )
@@ -634,6 +712,13 @@ def main() -> None:
         destination.parent.mkdir(parents=True, exist_ok=True)
         destination.write_text(
             json.dumps(overview, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+        )
+    for relative_path, bundle in match_bundles.items():
+        destination = args.demo_dir / relative_path
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_text(
+            json.dumps(bundle, ensure_ascii=False, separators=(",", ":")) + "\n",
+            encoding="utf-8",
         )
     primary = next(
         overview
@@ -665,6 +750,7 @@ def main() -> None:
             {
                 "metadata": str(args.demo_dir / "metadata.json"),
                 "overviews": len(overviews),
+                "match_bundles": len(match_bundles),
                 "case_study": str(args.case_study),
                 "secondary_case_study": str(args.secondary_case_study),
                 "matches": metadata["data_status"]["matches"],
