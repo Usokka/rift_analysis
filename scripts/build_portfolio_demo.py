@@ -235,7 +235,7 @@ def draft_summaries(actions: list[dict], target_teams: list[dict], matches: dict
             -int(item["metrics"][0]["sample_size"]),
             item["champion"],
         ),
-    )[:15]
+    )
 
 
 def trends(records: list[dict], matches: dict[str, dict]) -> list[dict]:
@@ -711,7 +711,7 @@ def main() -> None:
         destination = args.demo_dir / relative_path
         destination.parent.mkdir(parents=True, exist_ok=True)
         destination.write_text(
-            json.dumps(overview, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+            json.dumps(overview, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8"
         )
     for relative_path, bundle in match_bundles.items():
         destination = args.demo_dir / relative_path
@@ -726,7 +726,7 @@ def main() -> None:
         if overview["filters"]["team_id"] == metadata["default_selection"]["team_id"]
     )
     (args.demo_dir / "overview.json").write_text(
-        json.dumps(primary, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+        json.dumps(primary, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8"
     )
     args.case_study.write_text(case_study(primary, metadata, args.sources), encoding="utf-8")
     secondary = next(

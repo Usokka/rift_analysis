@@ -235,9 +235,8 @@ class AnalyticsRepository:
             .all()
         )
 
-    def draft(self, filters: AnalyticsFilters, limit: int = 15) -> list[dict]:
+    def draft(self, filters: AnalyticsFilters) -> list[dict]:
         where, params = _where(filters, "t")
-        params["limit"] = limit
         return list(
             self.connection.execute(
                 text(
@@ -274,7 +273,6 @@ class AnalyticsRepository:
                     FROM actions a CROSS JOIN total
                     LEFT JOIN pick_results p USING (champion)
                     ORDER BY (a.picks + a.bans) DESC, a.picks DESC, a.champion
-                    LIMIT :limit
                     """
                 ),
                 params,
