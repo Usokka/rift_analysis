@@ -25,6 +25,7 @@ lint:
 
 test:
 	uv run pytest
+	npm --prefix apps/web test
 
 build:
 	npm --prefix apps/web run build

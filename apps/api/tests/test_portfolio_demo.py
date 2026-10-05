@@ -49,3 +49,18 @@ def test_static_catalog_contains_comparable_team_snapshots():
     assert all(len(match["players"]) == 10 for match in bundle["matches"])
     assert all(team["reading"] for match in bundle["matches"] for team in match["teams"])
     assert "se limite explicitement à LFL2" in case_study(primary, metadata, [SAMPLE])
+
+
+def test_draft_catalog_keeps_champions_beyond_the_previous_top_fifteen():
+    from scripts.build_portfolio_demo import draft_summaries
+
+    games = {str(i): {"quality_status": "COMPLETE"} for i in range(20)}
+    teams = [{"game_id": game_id, "result": 1} for game_id in games]
+    actions = [
+        {"game_id": game_id, "champion": f"Champion {game_id}", "action_type": "PICK"}
+        for game_id in games
+    ]
+    catalog = draft_summaries(actions, teams, games)
+    assert len(catalog) == 20
+    assert all(champion["metrics"][0]["value"] == 5.0 for champion in catalog)
+    assert all(champion["metrics"][3]["sample_size"] == 1 for champion in catalog)
